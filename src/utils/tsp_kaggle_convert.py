@@ -61,17 +61,3 @@ if __name__ == '__main__':
         writer.writerow(['x', 'y'])
         for x, y in loaded_data:
             writer.writerow([x, y])
-
-
-
-    #TODO: Deleteme! Just for testing
-    # Construct the absolute path to the 'import' directory
-    import_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-
-    # Add the import directory to sys.path
-    sys.path.append(import_dir)
-
-    # Now you can import the module
-    import load_csv
-    loaded_data2 = load_csv.load_csv(args.output_path)
-    assert loaded_data == loaded_data2
