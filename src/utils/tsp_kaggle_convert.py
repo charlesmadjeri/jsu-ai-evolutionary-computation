@@ -14,6 +14,8 @@ import os
 import sys
 import ast
 
+ORIGINAL_FIELD_SIZE_LIMIT = csv.field_size_limit()
+
 """
 Loads the TSP Kaggle dataset from the given file path and returns the data for the given instance id.
 """
@@ -25,7 +27,6 @@ def load_tsp_kaggle_data(file_path: str, instance_id: int) -> list[tuple[float, 
     if instance_id < 0:
         raise ValueError(f'instance_id must be greater than 0')
     # needed so it can process large datasets
-    ORIGINAL_FIELD_SIZE_LIMIT = csv.field_size_limit()
     csv.field_size_limit(sys.maxsize)
     instance_id = str(instance_id)
     
