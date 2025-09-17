@@ -1,13 +1,15 @@
+from abc import ABC, abstractmethod
+
 """
 Abstract solver class - all solvers must inherit from this class.
 """
-class Solver():
+class Solver(ABC):
     """
-    Solver main method with solve algorithm implementation.
     Returns: list of coordinates and the distance traveled
     """
-    def solve(self, coordinates: list[tuple[float, float]])  -> [list[tuple[float, float]], float]:
-        raise NotImplementedError
+    @abstractmethod
+    def solve(self, coordinates: list[tuple[float, float]]) -> tuple[list[tuple[float, float]], float]:
+        pass
 
     def mutate(self) -> bool:
         return False
