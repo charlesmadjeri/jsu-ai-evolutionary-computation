@@ -23,15 +23,7 @@ def generate_csv_export(result_list:List[Tuple[float,float]],
                   writer.writerow(['Total Distance', total_distance])
 
 def generate_png_export(result_list:List[Tuple[float,float]],result_image:Any,image_path:str):
-     x_coords, y_coords= zip*(result_list)
-     plt.figure(figsize=(8,6))
-     plt.plot(x_coords, y_coords, marker='o')
-     plt.title('Coordinate Visualization')
-     plt.xlabel('X')
-     plt.ylabel('Y')
-     plt.grid(True)
-     plt.savefig(image_path)
-     plt.close()
+     
 
      if isinstance(result_image,Image.Image):
         result_image.save(image_path)
