@@ -1,4 +1,4 @@
-from .solver import Solver
+from solver import Solver
 # FIXME: uncomment this once CostCalculation class is implemented
 # from ..cost_calculation.cost_calculation import CostCalculation
 
