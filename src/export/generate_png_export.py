@@ -9,14 +9,6 @@ OUTPUT_FOLDER = "results"
 
 Point = Tuple[float, float]
 
-# Example points: [(x, y), ...]
-points_data = [
-    (2.0, 3.0),
-    (5.0, 7.0),
-    (9.0, 6.0),
-    (12.0, 2.0),
-]
-
 def compute_bounds(xs: List[float], ys: List[float], margin_rate: float) -> Tuple[float, float, float, float]:
     x_min, x_max = min(xs), max(xs)
     y_min, y_max = min(ys), max(ys)
@@ -49,7 +41,6 @@ def get_png_bytes(fig: Figure) -> bytes:
 
 def draw_map(points: List[Point], x_min: float = -10.0, x_max: float = 10.0, 
            y_min: float = -10.0, y_max: float = 10.0) -> Figure:
-    """Draw the map with points and arrows."""
     fig = ppl.figure(figsize=(8, 6))
     ppl.xlim(x_min, x_max)
     ppl.ylim(y_min, y_max)
@@ -77,7 +68,7 @@ def generate_png_export(points: List[Point]) -> bytes:
     """
     if not points:
         raise ValueError("Points list cannot be empty")
-        
+      
     xs = [x for x, _ in points]
     ys = [y for _, y in points]
     x_min, x_max, y_min, y_max = compute_bounds(xs, ys, MARGIN_RATE)
@@ -95,8 +86,3 @@ def save_map(png_data: bytes, filename: str) -> None:
     with open(filepath, 'wb') as f:
         f.write(png_data)
     print(f"Map saved to {filepath}")
-
-# Example usage
-if __name__ == "__main__":
-    png_data = generate_png_export(points_data)
-    save_map(png_data, "map.png")

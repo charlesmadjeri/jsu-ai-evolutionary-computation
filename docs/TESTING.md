@@ -78,10 +78,10 @@ def test_compute_bounds():
 pytest
 
 # Run specific test file
-pytest tests/test_generate_png_export.py
+pytest tests/export/test_generate_png_export.py
 
 # Run specific test
-pytest tests/test_generate_png_export.py::test_compute_bounds
+pytest tests/export/test_generate_png_export.py::test_compute_bounds
 ```
 
 ### Example of Good Test Organization
