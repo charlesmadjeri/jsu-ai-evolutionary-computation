@@ -45,7 +45,8 @@ def main() -> int:
     It will generate 10x random id between 0 and 300 and processes representing data from dataset
     """
 
-    from cost_calculation.euclidean_cost_calculation import EuclideanCostCalculation
+    from cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
+    # from cost_calculation.euclidean_cost_calculation import EuclideanCostCalculation
     from solvers.greedy_first import GreedyFirst
     from utils.tsp_kaggle_convert import load_tsp_kaggle_data
     import time
@@ -56,10 +57,11 @@ def main() -> int:
     save_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results")
     os.makedirs(save_dir, exist_ok=True)
     
+    greedy_first = GreedyFirst(ManhattanCostCalculation())
     for i in sample(range(300), 10):
         input_data = load_tsp_kaggle_data(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "dataset.csv"), i)
         start = time.time()
-        result, distance = GreedyFirst(EuclideanCostCalculation(), round_trip=True, minimise_cost=True).solve(input_data)
+        result, distance = greedy_first.solve(input_data)
         end = time.time()
         img = generate_png_export.generate_png_export(result)
         
