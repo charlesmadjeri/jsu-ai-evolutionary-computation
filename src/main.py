@@ -15,13 +15,13 @@ AI course - Evolutionary computation assignment
 
 import sys
 import os
+from typing import Optional
 
+import load_csv
 from export import generate_png_export
+
 # Add the src directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-
-from typing import Optional
-import load_csv
 
 def display_help() -> None:
     print("Usage: python main.py <dataset_csv_file>")
