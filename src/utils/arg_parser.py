@@ -70,7 +70,7 @@ def stopping_criterion_checker(value, min, max):
                 print_help_and_raise()
             #TODO: Return object for stopping criterion for minutes
             raise NotImplementedError("Not implemented")
-        if end in ['hours', 'hour']:
+        if end in ['hours', 'hour', 'hrs', 'hr']:
             if len(value) != 2 or not isinstance(value[0], int):
                 print_help_and_raise()
             #TODO: Return object for stopping criterion for hours
