@@ -17,7 +17,7 @@ class GreedyFirst(Solver):
         self.check_is_better_cost = lambda x, y: x < y if minimise_cost else x > y
 
     def solve(self,coordinates:list[tuple[float,float]]) -> tuple [list[int],float]:
-        if len(coordinates) == 0:
+        if not coordinates:
             raise ValueError("coordinates list can not be empty")
         if len(coordinates) == 1:
             return [0], 0
@@ -26,32 +26,27 @@ class GreedyFirst(Solver):
         visited = [remaining.pop(0)]
         
         total_distance = 0
-        while True:
+        while remaining:
             last = visited[-1]
             best_i = 0
-            best_d = self.cost_calculator.calculate(
-                coordinates[last],
-                coordinates[remaining[0]]
-            )
+            best_d = self.cost_calculator.calculate(coordinates[last],coordinates[remaining[0]])
+               
+        
 
             for i in range(1,len(remaining)):
-                d = self.cost_calculator.calculate(
-                    coordinates[last],
-                    coordinates[remaining[i]]
-                )
+                d = self.cost_calculator.calculate(coordinates[last],coordinates[remaining[i]])
                 if self.check_is_better_cost(d,best_d):
                     best_i = i
                     best_d = d
 
-                    total_distance += best_d
-                    visited.append(remaining.pop(best_i))
+            total_distance += best_d
+            visited.append(remaining.pop(best_i))
 
-                    if len(remaining) == 1:
-                        total_distance += self.cost_calculator.calculate(
-                            coordinates[visited[-1]],
-                            coordinates[remaining[0]]
-                        )
-            break
+        if self.round_trip:
+            total_distance += self.cost_calculator.calculate(
+                coordinates[visited[-1]],
+                coordinates[visited[0]]
+            )
 
         return visited, total_distance
     
