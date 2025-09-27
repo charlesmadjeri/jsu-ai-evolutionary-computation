@@ -13,37 +13,20 @@ Team Members:
 AI course - Evolutionary computation assignment
 """
 
+from ast import arg
 import sys
 import os
 from typing import Optional
 
-import load_csv
 from export import generate_png_export
+from utils.arg_parser import main_parser
 
 # Add the src directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-def display_help() -> None:
-    print("Usage: python main.py <dataset_csv_file>")
-    print("Example: python main.py dataset.csv")
-    print("\nPlease provide a CSV dataset file as an argument.")
-
-
-def parse_arguments() -> Optional[str]:
-    if len(sys.argv) != 2:
-        display_help()
-        return None
-
-    return sys.argv[1]
-
 def main() -> int:
-    """
-    This is temporary replacement for the main function.
-    Reason why is like this is that we will add args processing before merging to main.
-    This is for y'all to simply run the code that will do the processing and save image of the result.
-    Only requirement is to have original kaggle dataset in data folder (as it is currently in the repo).
-    It will generate 10x random id between 0 and 300 and processes representing data from dataset
-    """
+    args = main_parser()
+    exit(0)
 
     from cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
     # from cost_calculation.euclidean_cost_calculation import EuclideanCostCalculation
