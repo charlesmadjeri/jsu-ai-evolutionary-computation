@@ -31,8 +31,6 @@ class GreedyFirst(Solver):
             best_i = 0
             best_d = self.cost_calculator.calculate(coordinates[last],coordinates[remaining[0]])
                
-        
-
             for i in range(1,len(remaining)):
                 d = self.cost_calculator.calculate(coordinates[last],coordinates[remaining[i]])
                 if self.check_is_better_cost(d,best_d):
