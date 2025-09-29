@@ -20,7 +20,7 @@ class OrderCrossover(Crossover):
             parent_b.insert(idx_a + i, crossover_pts2[i])
         return (parent_a, parent_b)
     
-    def get_cross_points(self, crossover_size_rate, cities_nb):
+    def get_cross_points(self, crossover_size_rate, cities_nb) -> tuple[int, int]:
         crossover_lt = (int) (crossover_size_rate * cities_nb)
         idx_a = random.randint(0, cities_nb - crossover_lt)
         idx_b = idx_a + crossover_lt
