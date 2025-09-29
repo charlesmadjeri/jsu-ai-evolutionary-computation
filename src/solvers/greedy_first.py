@@ -47,4 +47,3 @@ class GreedyFirst(Solver):
             )
 
         return visited, total_distance
-    
