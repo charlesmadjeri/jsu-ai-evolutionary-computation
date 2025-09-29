@@ -11,5 +11,5 @@ class Crossover(ABC):
         return None
     
     @abstractmethod
-    def get_cross_points(self, crossover_size_rate: float, cities_nb: int) -> tuple[int, int]:
+    def get_cross_points(self, cities_nb: int) -> tuple[int, int]:
         return None

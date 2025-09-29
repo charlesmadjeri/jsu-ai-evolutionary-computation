@@ -1,4 +1,4 @@
-from crossover.crossover import Crossover
+from src.crossover.crossover import Crossover
 import random
 
 class OrderCrossover(Crossover):
@@ -6,7 +6,7 @@ class OrderCrossover(Crossover):
         super().__init__(parents, crossover_size_rate)
     
     def crossover(self) -> tuple[list[int], list[int]]:
-        idx_a, idx_b = self.get_cross_points(self.crossover_size_rate, len(self.parents[0]))
+        idx_a, idx_b = self.get_cross_points(len(self.parents[0]))
         parent_a, parent_b = self.parents
         crossover_pts1 = parent_b[idx_a:idx_b]
         crossover_pts2 = parent_a[idx_a:idx_b]
@@ -20,8 +20,8 @@ class OrderCrossover(Crossover):
             parent_b.insert(idx_a + i, crossover_pts2[i])
         return (parent_a, parent_b)
     
-    def get_cross_points(self, crossover_size_rate, cities_nb) -> tuple[int, int]:
-        crossover_lt = (int) (crossover_size_rate * cities_nb)
+    def get_cross_points(self, cities_nb) -> tuple[int, int]:
+        crossover_lt = (int) (self.crossover_size_rate * cities_nb)
         idx_a = random.randint(0, cities_nb - crossover_lt)
         idx_b = idx_a + crossover_lt
         return (idx_a, idx_b)
