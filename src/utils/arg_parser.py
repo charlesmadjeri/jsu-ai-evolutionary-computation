@@ -102,7 +102,7 @@ def main_parser(args=None):
     parser.add_argument('-es', '--elite-size', dest='elite_size',
                         type=lambda x: float_checker(x, min=0, max=1), 
                         help=f'Size of the elite population - it is percentage and must be in range {range_to_str(0, 1)}', default=.1)
-    parser.add_argument('-cs', '--crossover-segment-lenght', dest='crossover_size',
+    parser.add_argument('-cs', '--crossover-size-rate', dest='crossover_size',
                         type=lambda x: int_or_float_checker(x, int_min=1, int_max=None, float_min=0, float_max=1), 
                         help=f'Segment length for crossover - if percentage, must be in range {range_to_str(0, 1)}, if integer, must be in range {range_to_str(1, None)}', default=5)
     parser.add_argument('-mp', '--mutation-probability', dest='mutation_probability',
@@ -111,7 +111,7 @@ def main_parser(args=None):
     parser.add_argument('-ms', '--mutation-step-size', dest='mutation_step_size',
                         type=lambda x: int_checker(x, min=0, max=None), 
                         help=f'Step size for mutation - must be in range {range_to_str(0, None)}', default=2)
-    
+    # parser.add_argument() # TODO: number of iterations
     parser.add_argument('-v', action='count', default=0, dest='verbose', help='Verbose level (described by count of \'v\' characters)')
     parser.add_argument('--verbose', type=int, dest='verbose', help='Verbose level (described by value)')
     parsed_args = parser.parse_args(args)
