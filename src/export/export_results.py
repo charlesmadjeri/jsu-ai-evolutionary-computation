@@ -25,7 +25,7 @@ def export_results(result_list:list[tuple[float,float]], total_distance:float, e
         return
     
      timestamp=datetime.now().strftime('%Y-%m-%d %H-%M-%S')
-     result_dir= f'results/{timestamp}'
+     result_dir= f'results/simple_passes/{timestamp}'
      os.makedirs(result_dir,exist_ok=True)
 
      csv_path=os.path.join(result_dir,'results.csv')
