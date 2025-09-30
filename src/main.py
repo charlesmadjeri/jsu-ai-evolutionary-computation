@@ -61,13 +61,14 @@ def main() -> int:
     for i in sample(range(300), 10):
         input_data = load_tsp_kaggle_data(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "dataset.csv"), i)
         start = time.time()
-        result, distance = greedy_first.solve(input_data)
+        solution_indices, distance = greedy_first.solve(input_data)
+        solution_points = [input_data[i] for i in solution_indices]
         end = time.time()
-        img = generate_png_export.generate_png_export(result)
+        img = generate_png_export.generate_png_export(solution_points)
         
         generate_png_export.save_map(img, os.path.join(save_dir, f"result_{i}.png") )
         print(f"{i} of size {len(input_data)} solved in {end - start} seconds, total distance is {distance}")
-        assert len(result) == len(input_data)
+        assert len(solution_indices) == len(input_data)
 
     return 0
 
