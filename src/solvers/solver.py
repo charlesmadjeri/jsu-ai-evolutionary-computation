@@ -8,7 +8,7 @@ class Solver(ABC):
     Returns: list of coordinates and the distance traveled
     """
     @abstractmethod
-    def solve(self, coordinates: list[tuple[float, float]]) -> tuple[list[tuple[float, float]], float]:
+    def solve(self, coordinates: list[tuple[float, float]]) -> tuple[list[int], float]:
         pass
 
     def mutate(self) -> bool:
