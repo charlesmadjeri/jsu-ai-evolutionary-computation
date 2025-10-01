@@ -19,7 +19,7 @@ import os
 from typing import Optional
 
 from export import generate_png_export
-from utils.arg_parser import main_parser
+from dataparser.arg_parser import main_parser
 
 # Add the src directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
