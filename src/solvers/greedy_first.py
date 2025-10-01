@@ -12,6 +12,7 @@ class GreedyFirst(Solver):
         minimise_cost: bool - whether to minimise the cost or maximise the cost.
     """
     def __init__(self, cost_calculator: CostCalculation, round_trip=False, minimise_cost=True):
+        super().__init__()
         self.cost_calculator = cost_calculator
         self.round_trip = round_trip
         self.check_is_better_cost = lambda x, y: x < y if minimise_cost else x > y
@@ -24,15 +25,21 @@ class GreedyFirst(Solver):
         
         remaining = list(range(len(coordinates)))
         visited = [remaining.pop(0)]
-        
         total_distance = 0
+
+        self.metric_tracker.log("start_node", visited[0])
+
         while remaining:
+            self.metric_tracker.log("greedy_step", 1)
+
             last = visited[-1]
             best_i = 0
             best_d = self.cost_calculator.calculate(coordinates[last],coordinates[remaining[0]])
-               
+            self.metric_tracker.log("distance_calculation", 1)
+
             for i in range(1,len(remaining)):
                 d = self.cost_calculator.calculate(coordinates[last],coordinates[remaining[i]])
+                self.metric_tracker.log("distance_calculations", 1)
                 if self.check_is_better_cost(d,best_d):
                     best_i = i
                     best_d = d
@@ -41,9 +48,14 @@ class GreedyFirst(Solver):
             visited.append(remaining.pop(best_i))
 
         if self.round_trip:
-            total_distance += self.cost_calculator.calculate(
+            d = self.cost_calculator.calculate(
                 coordinates[visited[-1]],
                 coordinates[visited[0]]
             )
+            total_distance += d
+            self.metric_tracker.log("distance_calculations", 1)
+
+        self.metric_tracker.log("final_distance", total_distance)
+        self.metric_tracker.log("nodes_visited", len(visited))
 
         return visited, total_distance

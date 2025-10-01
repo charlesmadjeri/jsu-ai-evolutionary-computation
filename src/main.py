@@ -19,6 +19,8 @@ from typing import Optional
 
 import load_csv
 from export import generate_png_export
+from pprint import pprint
+
 
 # Add the src directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -62,11 +64,17 @@ def main() -> int:
         input_data = load_tsp_kaggle_data(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "dataset.csv"), i)
         start = time.time()
         solution_indices, distance = greedy_first.solve(input_data)
-        solution_points = [input_data[i] for i in solution_indices]
         end = time.time()
+
+        print(f"\n--- Metrics for run {i} ---")
+        metrics = greedy_first.metric_tracker.summary()
+        pprint(metrics)
+        print("------------------------\n")
+        
+        solution_points = [input_data[i] for i in solution_indices]
         img = generate_png_export.generate_png_export(solution_points)
         
-        generate_png_export.save_map(img, os.path.join(save_dir, f"result_{i}.png") )
+        generate_png_export.save_map(img, os.path.join(save_dir, f"result_{i}.png"))
         print(f"{i} of size {len(input_data)} solved in {end - start} seconds, total distance is {distance}")
         assert len(solution_indices) == len(input_data)
 
