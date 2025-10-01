@@ -21,10 +21,11 @@ def generate_csv_export(result_list:List[Tuple[float,float]],
              for x,y in result_list:
                   writer.writerow(['Total Distance', total_distance])
 
-#def generate_png_export(result_list:List[Tuple[float,float]],result_image:Any,image_path:str):
-    
-  #   if isinstance(result_image,Image.Image):
-        result_image.save(image_path) ###
+def generate_png_export(result_list:List[Tuple[float,float]],result_image:Any,image_path:str):
+     
+
+     if isinstance(result_image,Image.Image):
+        result_image.save(image_path)
 
 def export_results(result_list:List[Tuple[float,float]],result_image:Any):
      timestamp=datetime.now().strftime('%Y-%m-%d %H-%M-%S')
@@ -36,11 +37,11 @@ def export_results(result_list:List[Tuple[float,float]],result_image:Any):
 
      total_distance=compute_distances(result_list)
 
-    # generate_csv_export(result_list,total_distance,csv_path)
+   ###  generate_csv_export(result_list,total_distance,csv_path)
 
     # generate_png_export(result_list,result_image,image_path)
       
-    # return csv_path,image_path 
+     return csv_path,image_path ###
 
 
 
