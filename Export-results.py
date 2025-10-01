@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 from typing import List,Tuple,Any
 from PIL import Image
-import matplotlib.pyplot as plt
 import math
 
 def compute_distances(result_list:List[Tuple[float,float]])->float:
@@ -22,19 +21,10 @@ def generate_csv_export(result_list:List[Tuple[float,float]],
              for x,y in result_list:
                   writer.writerow(['Total Distance', total_distance])
 
-def generate_png_export(result_list:List[Tuple[float,float]],result_image:Any,image_path:str):
-     x_coords, y_coords= zip*(result_list)
-     plt.figure(figsize=(8,6))
-     plt.plot(x_coords, y_coords, marker='o')
-     plt.title('Coordinate Visualization')
-     plt.xlabel('X')
-     plt.ylabel('Y')
-     plt.grid(True)
-     plt.savefig(image_path)
-     plt.close()
-
-     if isinstance(result_image,Image.Image):
-        result_image.save(image_path)
+#def generate_png_export(result_list:List[Tuple[float,float]],result_image:Any,image_path:str):
+    
+  #   if isinstance(result_image,Image.Image):
+        result_image.save(image_path) ###
 
 def export_results(result_list:List[Tuple[float,float]],result_image:Any):
      timestamp=datetime.now().strftime('%Y-%m-%d %H-%M-%S')
@@ -46,11 +36,11 @@ def export_results(result_list:List[Tuple[float,float]],result_image:Any):
 
      total_distance=compute_distances(result_list)
 
-     generate_csv_export(result_list,total_distance,csv_path)
+    # generate_csv_export(result_list,total_distance,csv_path)
 
-     generate_png_export(result_list,result_image,image_path)
+    # generate_png_export(result_list,result_image,image_path)
       
-     return csv_path,image_path
+    # return csv_path,image_path 
 
 
 
