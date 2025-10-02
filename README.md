@@ -78,7 +78,7 @@ These will be saved in the `outputs/` directory.
 ### Contributors:
 Andrej Kutny
 Charles Madjeri
-Samrat Debanath
+Samrat Debnath
 Vladimir Giustacchini
 Aikeya Ainiwaer
 ***
