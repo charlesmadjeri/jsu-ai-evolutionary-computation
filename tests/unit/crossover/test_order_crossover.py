@@ -1,3 +1,4 @@
+from random import sample, shuffle
 from src.crossover.order_crossover import OrderCrossover
 
 parents = (
@@ -27,3 +28,27 @@ def test_order_crossover_crossover():
 
     assert sorted(child_a) == sorted(par_a)
     assert sorted(child_b) == sorted(par_b)
+
+def test_unique_cities():
+    solution_size = 100
+    iterations = 1000
+    for i in range(0, iterations):
+        parent1 = list(range(0, solution_size))
+        shuffle(parent1)
+        parent2 = parent1.copy()
+        while True:
+            shuffle(parent2)
+            if parent2 != parent1:
+                break
+        parent1_copy = parent1.copy()
+        parent2_copy = parent2.copy()
+        crossover = OrderCrossover((parent1, parent2), crossover_size_rate)
+        offspring1, offspring2 = crossover.crossover()
+        assert parent1_copy == parent1
+        assert parent2_copy == parent2
+        assert len(set(offspring1)) == solution_size
+        assert len(set(offspring2)) == solution_size
+        assert min(offspring1) == 0
+        assert max(offspring1) == solution_size - 1
+        assert min(offspring2) == 0
+        assert max(offspring2) == solution_size - 1
