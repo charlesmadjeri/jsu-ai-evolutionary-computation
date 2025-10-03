@@ -2,14 +2,14 @@ from src.elite_selector.elite_selector import EliteSelector
 from src.cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
 
 parents = [
-    [1, 2, 3, 4, 5, 6, 7, 8, 9], 
-    [4, 5, 2, 1, 8, 7, 6, 3, 9],
-    [7, 6, 4, 3, 9, 5, 2, 1, 8],
-    [5, 1, 6, 7, 9, 4, 2, 3, 8],
-    [2, 4, 1, 8, 5, 6, 3, 7, 9],
-    [3, 8, 6, 5, 7, 9, 2, 1, 4],
-    [1, 3, 4, 9, 2, 6, 8, 7, 5],
-    [8, 1, 7, 9, 4, 5, 6, 2, 3]
+    [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+    [3, 4, 1, 0, 7, 6, 5, 2, 8],
+    [6, 5, 3, 2, 8, 4, 1, 0, 7],
+    [4, 0, 5, 6, 8, 3, 1, 2, 7],
+    [1, 3, 0, 7, 4, 5, 2, 6, 8],
+    [2, 7, 5, 4, 6, 8, 1, 0, 3],
+    [0, 2, 3, 8, 1, 5, 7, 6, 4],
+    [7, 0, 6, 8, 3, 4, 5, 1, 2]
 ]
 
 coord = [
@@ -47,8 +47,8 @@ def test_elite_selector_elites_are_lowest_cost():
     costs = elite_selector.calculate_cost(parents)
     elites = elite_selector.find_elite_elements(parents)
     elite_costs = [costs[parents.index(elite)] for elite in elites]
-    non_elite_costs = [costs[i] for i in range(len(parents)) if parents[i] not in elites]
-    assert all(ec <= nec for ec in elite_costs for nec in non_elite_costs)
+    sorted_costs = sorted(costs)[:elite_size]
+    assert sorted(elite_costs) == sorted_costs
 
 def test_elite_selector_no_duplicates_in_elites():
     elites = elite_selector.find_elite_elements(parents)
@@ -57,10 +57,10 @@ def test_elite_selector_no_duplicates_in_elites():
 
 def test_elite_selector_handles_ties():
     tied_parents = [
-        [1, 2, 3],
-        [1, 2, 3],
-        [2, 3, 1],
-        [3, 1, 2]
+        [0, 1, 2],
+        [0, 1, 2],
+        [1, 2, 0],
+        [2, 0, 1]
     ]
     tied_coords = [
         (0, 0),
@@ -78,3 +78,16 @@ def test_elite_selector_empty_generation():
     empty_selector = EliteSelector(coord, ManhattanCostCalculation, elite_size)
     elites_empty = empty_selector.find_elite_elements([])
     assert elites_empty == []
+
+def test_cost_calculation_vs_manual():
+    cost_calculator = ManhattanCostCalculation
+    coordinates = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5)]
+    elite_selector = EliteSelector(coordinates, cost_calculator, 2)
+    generation = [[0, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 0], [2, 3, 4, 5, 0, 1], [4, 3, 2, 1, 0, 5]]
+    costs = elite_selector.calculate_cost(generation)
+    for i in range(len(generation)):
+        cost = 0
+        for j in range(1, len(generation[i])):
+            cost += cost_calculator.calculate(coordinates[generation[i][j-1]], coordinates[generation[i][j]])
+        print(i, cost, costs[i])
+        assert cost == costs[i]
