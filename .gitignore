@@ -214,5 +214,6 @@ __marimo__/
 *.toc
 *.bbl
 *.blg
+*.synctex.gz
 
 results/*
