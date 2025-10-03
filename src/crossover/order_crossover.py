@@ -6,7 +6,8 @@ class OrderCrossover(Crossover):
     
     def crossover(self) -> tuple[list[int], list[int]]:
         idx_a, idx_b = self.get_cross_points(len(self.parents[0]))
-        parent_a, parent_b = self.parents
+        parent_a = self.parents[0].copy()
+        parent_b = self.parents[1].copy()
         crossover_pts1 = parent_b[idx_a:idx_b]
         crossover_pts2 = parent_a[idx_a:idx_b]
         for point in crossover_pts1:
