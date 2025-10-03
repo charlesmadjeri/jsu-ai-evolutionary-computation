@@ -1,4 +1,4 @@
-class MeticTracker:
+class MetricTracker:
     def __init__(self):
         self.metrics = {}
     
@@ -12,9 +12,9 @@ class MeticTracker:
     
     def summary(self):
         return {
-            k:sum(v) if all(isinstance(i, (int, float)) for i in v) else v
-            for k, v in self.metrics.items()
+            metric_name: sum(metric_values) if all(isinstance(item, (int, float)) for item in metric_values) else metric_values
+            for metric_name, metric_values in self.metrics.items()
         }
     
     def reset(self):
-        self.metrics.clear() 
+        self.metrics.clear()
