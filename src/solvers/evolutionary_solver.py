@@ -19,9 +19,10 @@ class EvolutionarySolver(Solver):
         self.or_criterions = stop_criterions
         self.and_criterions = [IterationsStopCriterion(MINIMUM_ITERATIONS)]
         self.verbose_level = verbose_level
+        self.has_or_criterions = len(self.or_criterions) > 0
 
         # this lambda is needed so if there is none 'or criterion' it will always return True
-        if len(self.or_criterions) > 0:
+        if self.has_or_criterions:
             self.get_or_criterions_result = lambda x: [criterion.check(x) for criterion in self.or_criterions]
         else:
             self.get_or_criterions_result = lambda x: [True]
@@ -46,18 +47,19 @@ class EvolutionarySolver(Solver):
                 # print stoppage criterions that met
                 if self.verbose_level > 0:
                     and_positive_stoppages = []
-                    or_positive_stoppages = []
                     for i in range(len(and_stoppage_results)):
                         if and_stoppage_results[i]:
                             and_positive_stoppages.append(self.and_criterions[i])
-                    for i in range(len(or_stoppage_results)):
-                        if or_stoppage_results[i]:
-                            or_positive_stoppages.append(self.or_criterions[i])
                     log_str = "Stoppage criterions met:"
                     if len(and_positive_stoppages) > 0:
                         log_str += f" and[{and_positive_stoppages.join(', ')}]"
-                    if len(or_positive_stoppages) > 0:
-                        log_str += f" or {or_positive_stoppages}"
+                    if self.has_or_criterions:
+                        or_positive_stoppages = []
+                        for i in range(len(or_stoppage_results)):
+                            if or_stoppage_results[i]:
+                                or_positive_stoppages.append(self.or_criterions[i])
+                        if len(or_positive_stoppages) > 0:
+                            log_str += f" or[{or_positive_stoppages.join(', ')}]"
                     print(log_str)
                 break
             generation = [elite_pair[0] for elite_pair in elites]
