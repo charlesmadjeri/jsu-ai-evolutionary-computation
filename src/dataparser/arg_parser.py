@@ -1,5 +1,10 @@
 import argparse
 
+from crossover.order_crossover import OrderCrossover
+from crossover.partially_mapped_crossover import PartiallyMappedCrossover
+from elite_selector.elite_selector import EliteSelector
+from load_csv import load_csv
+from solvers.evolutionary_solver import EvolutionarySolver
 from stop_criterions.time_stop_criterion import TimeStopCriterion
 from stop_criterions.improvement_stop_criterion import ImprovementStopCriterion
 from stop_criterions.iterations_stop_criterion import IterationsStopCriterion
@@ -8,6 +13,8 @@ from cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
 from cost_calculation.euclidean_cost_calculation import EuclideanCostCalculation
 
 from solvers.greedy_first import GreedyFirst
+
+from os import path
 
 """
 Stringify the range [min, max]
@@ -64,63 +71,76 @@ def int_or_float_checker(value, int_min, int_max, float_min, float_max, none_all
         raise argparse.ArgumentTypeError(f"'{value}' is not a valid integer or float in range {range_to_str(int_min, int_max)} {range_to_str(float_min, float_max)}")
     return result
 
+main_parser = argparse.ArgumentParser(
+    description='Solver for the Traveling Salesman Problem (TSP) using Evolutionary Computation'
+)
+main_parser.add_argument('-e', '--export', choices=['png', 'csv'], default=['png', 'csv'], nargs='+')
+main_parser.add_argument('input_path', type=str,
+                    metavar='INPUT_CSV_PATH', 
+                    help='Dataset path, should be .csv file containing 2 columns for x and y coordinates, rows representing cities')
+# --population-size 3 because has to have 2 parents and 1+ child
+main_parser.add_argument('-ps', '--population-size', dest='population_size',
+                    type=lambda x: int_or_float_checker(x, int_min=3, int_max=None, float_min=0, float_max=1),
+                    help=f'Size of the solution population size - if percentage, must be in range {range_to_str(0, 1)}, if integer, must be in range {range_to_str(1, None)}', default=10)
+main_parser.add_argument('-es', '--elite-size', dest='elite_size',
+                    type=lambda x: int_or_float_checker(x, int_min=2, int_max=None, float_min=0, float_max=1), 
+                    help=f'Size of the elite population - it is percentage and must be in range {range_to_str(0, 1)}', default=.1)
+# TODO: --crossover-segment can be also None => randomly generated segment - implement if agreed
+main_parser.add_argument('-cr', '--crossover-type', dest='crossover_type', choices=['order', 'partially-ordered'], default='order')
+main_parser.add_argument('-cs', '--crossover-segment', dest='crossover_segment',
+                    type=lambda x: int_or_float_checker(x, int_min=1, int_max=None, float_min=0, float_max=1, none_allowed=True), 
+                    help=f'Segment length for crossover - if percentage, must be in range {range_to_str(0, 1)}, if integer, must be in range {range_to_str(1, None)}', default=5)
+# # TODO: where is this used?
+# main_parser.add_argument('-mp', '--mutation-probability', dest='mutation_probability',
+#                     type=lambda x: float_checker(x, min=0, max=1), 
+#                     help=f'Probability of mutation - must be in range {range_to_str(0, 1)}', default=.001)
+# # TODO: where is this used?
+# main_parser.add_argument('-ms', '--mutation-step-size', dest='mutation_step_size',
+#                     type=lambda x: int_checker(x, min=0, max=None), 
+#                     help=f'Step size for mutation - must be in range {range_to_str(0, None)}', default=2)
+main_parser.add_argument('-sit', '--stop-iterations', required=False, dest='stop_iterations',
+                    type=lambda x: int_checker(x, min=1, max=None), 
+                    help='Stoppage criterion for number of iterations.')
+main_parser.add_argument('-shr', '--stop-hours', required=False, dest='stop_hours', type=int,
+                    help='Stoppage criterion for hours. If minutes and/or seconds are also provided, it will be added to the total time.')
+main_parser.add_argument('-smin', '--stop-minutes', required=False, dest='stop_minutes', type=int, 
+                    help='Stoppage criterion for minutes. If seconds and/or hours are also provided, it will be added to the total time.')
+main_parser.add_argument('-ssec', '--stop-seconds', required=False, dest='stop_seconds', type=int,
+                    help='Stoppage criterion for seconds. If minutes and/or hours are also provided, it will be added to the total time.')
+main_parser.add_argument('-sim', '--stop-improvement', required=False, dest='stop_improvement',
+                    type=lambda x: float_checker(x, min=0.000000001, max=None),
+                    help=f'Stoppage criterion for improvement - must be in range {range_to_str(0.000000001, None)}')
+main_parser.add_argument('-cc', '--cost-calculator', dest='cost_calculator', choices=['manhattan', 'euclidean'], default='manhattan')
+# parser.add_argument('-op', '--optimise-cost', dest='optimise_cost', choices=['min', 'max'], default='min') # temporarily disabled - evolutionary computation doesn't support max price (yet)
+main_parser.add_argument('-gf', '--greedy-first', action='store_true', help='Use greedy first algorithm instead of evolutionary computation. WARNING: This will override most of the other arguments and run greedy first instead of evolutionary computation.', default=False)
+main_parser.add_argument('-v', action='count', default=0, dest='verbose', help='Verbose level (described by count of \'v\' characters)')
+main_parser.add_argument('--verbose', type=int, dest='verbose', help='Verbose level (described by value)')
+
 """
 Main parser for the application
 """
-def main_parser(args=None):
-    parser = argparse.ArgumentParser(
-        description='Solver for the Traveling Salesman Problem (TSP) using Evolutionary Computation'
-    )
-    parser.add_argument('-e', '--export', choices=['png', 'csv'], default=['png', 'csv'], nargs='+')
-    parser.add_argument('input_path', type=str,
-                        metavar='INPUT_CSV_PATH', 
-                        help='Dataset path, should be .csv file containing 2 columns for x and y coordinates, rows representing cities')
-    # --population-size 3 because has to have 2 parents and 1+ child
-    parser.add_argument('-ps', '--population-size', dest='population_size',
-                        type=lambda x: int_or_float_checker(x, int_min=3, int_max=None, float_min=0, float_max=1),
-                        help=f'Size of the solution population size - if percentage, must be in range {range_to_str(0, 1)}, if integer, must be in range {range_to_str(1, None)}', default=10)
-    parser.add_argument('-es', '--elite-size', dest='elite_size',
-                        type=lambda x: int_or_float_checker(x, int_min=2, int_max=None, float_min=0, float_max=1), 
-                        help=f'Size of the elite population - it is percentage and must be in range {range_to_str(0, 1)}', default=.1)
-    # TODO: --crossover-segment can be also None => randomly generated segment - implement if agreed
-    parser.add_argument('-cs', '--crossover-segment', dest='crossover_segment',
-                        type=lambda x: int_or_float_checker(x, int_min=1, int_max=None, float_min=0, float_max=1, none_allowed=True), 
-                        help=f'Segment length for crossover - if percentage, must be in range {range_to_str(0, 1)}, if integer, must be in range {range_to_str(1, None)}', default=5)
-    # TODO: where is this used?
-    parser.add_argument('-mp', '--mutation-probability', dest='mutation_probability',
-                        type=lambda x: float_checker(x, min=0, max=1), 
-                        help=f'Probability of mutation - must be in range {range_to_str(0, 1)}', default=.001)
-    # TODO: where is this used?
-    parser.add_argument('-ms', '--mutation-step-size', dest='mutation_step_size',
-                        type=lambda x: int_checker(x, min=0, max=None), 
-                        help=f'Step size for mutation - must be in range {range_to_str(0, None)}', default=2)
-    parser.add_argument('-sit', '--stop-iterations', required=False, dest='stop_iterations',
-                        type=lambda x: int_checker(x, min=1, max=None), 
-                        help='Stoppage criterion for number of iterations.')
-    parser.add_argument('-shr', '--stop-hours', required=False, dest='stop_hours', type=int,
-                        help='Stoppage criterion for hours. If minutes and/or seconds are also provided, it will be added to the total time.')
-    parser.add_argument('-smin', '--stop-minutes', required=False, dest='stop_minutes', type=int, 
-                        help='Stoppage criterion for minutes. If seconds and/or hours are also provided, it will be added to the total time.')
-    parser.add_argument('-ssec', '--stop-seconds', required=False, dest='stop_seconds', type=int,
-                        help='Stoppage criterion for seconds. If minutes and/or hours are also provided, it will be added to the total time.')
-    parser.add_argument('-sim', '--stop-improvement', required=False, dest='stop_improvement',
-                        type=lambda x: float_checker(x, min=0.000000001, max=None),
-                        help=f'Stoppage criterion for improvement - must be in range {range_to_str(0.000000001, None)}')
-    parser.add_argument('-cc', '--cost-calculator', dest='cost_calculator', choices=['manhattan', 'euclidean'], default='manhattan')
-    # parser.add_argument('-op', '--optimise-cost', dest='optimise_cost', choices=['min', 'max'], default='min') # temporarily disabled - evolutionary computation doesn't support max price (yet)
-    parser.add_argument('-gf', '--greedy-first', action='store_true', help='Use greedy first algorithm instead of evolutionary computation. WARNING: This will override most of the other arguments and run greedy first instead of evolutionary computation.', default=False)
-    parser.add_argument('-v', action='count', default=0, dest='verbose', help='Verbose level (described by count of \'v\' characters)')
-    parser.add_argument('--verbose', type=int, dest='verbose', help='Verbose level (described by value)')
-    parsed_args = parser.parse_args(args)
+def parse_main(args=None):
+    parsed_args = main_parser.parse_args(args)
+
+    dataset = load_csv(parsed_args.input_path)
+    if len(dataset) == 0:
+        raise ValueError(f"File {parsed_args.input_path} is empty")
+    
+    if not path.exists(parsed_args.input_path):
+        raise ValueError(f"File {parsed_args.input_path} does not exist")
+    if not parsed_args.input_path.endswith('.csv'):
+        raise ValueError(f"File {parsed_args.input_path} is not a .csv file")
+    
 
     if parsed_args.cost_calculator == 'manhattan':
-        cost_calculator = ManhattanCostCalculation()
+        cost_calculator = ManhattanCostCalculation
     elif parsed_args.cost_calculator == 'euclidean':
-        cost_calculator = EuclideanCostCalculation()
+        cost_calculator = EuclideanCostCalculation
     else:
         raise ValueError(f"Invalid distance calculator: {parsed_args.cost_calculator}")
     
     result = {
+        "dataset": dataset,
         "verbose": parsed_args.verbose,
         "export_image": "png" in parsed_args.export,
         "export_csv": "csv" in parsed_args.export
@@ -135,7 +155,29 @@ def main_parser(args=None):
         result["solver"] = GreedyFirst(cost_calculator=cost_calculator, minimise_cost=minimise_cost)
         return result
 
-    # TODO: When logical operators are implemented use them instead of list
+    population_size = parsed_args.population_size
+    if isinstance(population_size, float):
+        population_size = int(population_size * len(dataset))
+    elif population_size < 3:
+        ## Need 2 parents and 1 child minimum
+        raise ValueError(f"Population size must be greater than 2, but got {population_size}")
+
+    elite_size = parsed_args.elite_size
+    if isinstance(elite_size, float):
+        elite_size = max(2, min(int(elite_size * population_size), population_size - 1))
+
+    segment_length = parsed_args.crossover_segment
+    if isinstance(segment_length, float):
+        l = len(dataset[0])
+        segment_length = max(1, min(int(segment_length * l), l - 1))
+    
+    if parsed_args.crossover_type == 'order':
+        crossover = OrderCrossover(segment_length)
+    elif parsed_args.crossover_type == 'partially-ordered':
+        crossover = PartiallyMappedCrossover(segment_length)
+    else:
+        raise ValueError(f"Invalid crossover type: {parsed_args.crossover_type}")
+    
     stoppage_criteria = []
     if parsed_args.stop_iterations is not None:
         stoppage_criteria.append(IterationsStopCriterion(parsed_args.stop_iterations))
@@ -153,4 +195,11 @@ def main_parser(args=None):
     if len(stoppage_criteria) == 0:
         raise ValueError("No stoppage criteria provided!")
 
+    result["solver"] = EvolutionarySolver(
+        elite_selector=EliteSelector(cost_calculator=cost_calculator, elite_size=elite_size), 
+        crossover=crossover, 
+        stop_criterions=stoppage_criteria, 
+        population_size=population_size,
+        verbose_level=result["verbose"]
+    )
     return result

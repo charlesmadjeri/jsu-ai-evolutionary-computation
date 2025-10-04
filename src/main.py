@@ -19,41 +19,32 @@ import os
 from typing import Optional
 
 from export import generate_png_export
-from dataparser.arg_parser import main_parser
+from dataparser.arg_parser import main_parser, parse_main
+from export.export_results import export_results
 
 # Add the src directory to Python path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 def main() -> int:
-    args = main_parser()
-    exit(0)
-
-    from cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
-    # from cost_calculation.euclidean_cost_calculation import EuclideanCostCalculation
-    from solvers.greedy_first import GreedyFirst
-    from utils.tsp_kaggle_convert import load_tsp_kaggle_data
-    import time
-    from export import generate_png_export
-
-    from random import sample
-    
-    save_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results")
-    os.makedirs(save_dir, exist_ok=True)
-    
-    greedy_first = GreedyFirst(ManhattanCostCalculation())
-    for i in sample(range(300), 10):
-        input_data = load_tsp_kaggle_data(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "dataset.csv"), i)
-        start = time.time()
-        solution_indices, distance = greedy_first.solve(input_data)
-        solution_points = [input_data[i] for i in solution_indices]
-        end = time.time()
-        img = generate_png_export.generate_png_export(solution_points)
-        
-        generate_png_export.save_map(img, os.path.join(save_dir, f"result_{i}.png") )
-        print(f"{i} of size {len(input_data)} solved in {end - start} seconds, total distance is {distance}")
-        assert len(solution_indices) == len(input_data)
-
+    try:
+        parsed_data = parse_main()
+    except Exception as e:
+        print(f"Error: {e}")
+        main_parser.print_help()
+        return 1
+    solution_indices, distance = parsed_data["solver"].solve(parsed_data["dataset"])
+    solution_points = [parsed_data["dataset"][i] for i in solution_indices]
+    if parsed_data["verbose"] > 0:
+        print(f"Solution: {solution_points}")
+        print(f"Distance: {distance}")
+    # TODO: Replace this with export_results 
+    if parsed_data["export_image"]:
+        generate_png_export.generate_png_export(solution_points)
+    if parsed_data["export_csv"]:
+        export_results.export_results(solution_points)
+        # generate_csv_export.generate_csv_export(result["solution"], result["distance"], run_data["output_path"])
     return 0
+
 
 
 if __name__ == "__main__":
