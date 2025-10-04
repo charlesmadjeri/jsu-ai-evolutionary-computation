@@ -19,7 +19,7 @@ class EvolutionarySolver(Solver):
             verbose_level: int = 0,
             # maximise: bool = False, # TODO implement
             minimum_iterations: int = 25):
-        if not (population_size >= 3 and population_size > elite_selector.elite_size):
+        if population_size < 3 or population_size <= elite_selector.elite_size:
             raise ValueError(f"Population size must be greater than 3 and greater than elite size, but got population_size={population_size} and elite_size={elite_selector.elite_size}")
         
         self.elite_selector = elite_selector
@@ -61,12 +61,12 @@ class EvolutionarySolver(Solver):
 
     def create_new_generation(self, elites: list[tuple[list[int], float]]) -> list[list[int]]:
         generation = [elite_pair[0] for elite_pair in elites]
-        while len(generation) < self.elite_selector.population_size:
+        while len(generation) < self.population_size:
             elite_pair = sample(elites, 2)
             child_a, child_b = self.crossover.crossover(elite_pair)
             generation.append(child_a)
             generation.append(child_b)
-        if len(generation) > self.elite_selector.population_size:
+        if len(generation) > self.population_size:
             generation.pop()
         return generation
         
@@ -74,7 +74,7 @@ class EvolutionarySolver(Solver):
         solution_size = len(coordinates)
         for criterion in chain(self.or_criterions, self.and_criterions):
             criterion.start()
-        generation = [sample(range(solution_size), solution_size) for _ in range(population_size)]
+        generation = [sample(range(solution_size), solution_size) for _ in range(self.population_size)]
         
         while True:
             # TODO update find_elite_elements to contain also total distance -> list[tuple(list[int], float)]
