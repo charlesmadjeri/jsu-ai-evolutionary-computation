@@ -5,20 +5,43 @@ parents = (
     [1, 2, 3, 4, 5, 6, 7, 8, 9], 
     [4, 5, 2, 1, 8, 7, 6, 3, 9]
 )
-crossover_size_rate = 0.3
+segment_length = 3
 
 def test_order_crossover_init():
-    crossover = OrderCrossover(crossover_size_rate)
-    assert crossover.crossover_size_rate == crossover_size_rate
+    crossover = OrderCrossover(segment_length)
+    assert crossover.get_segment_length(9999999999) == segment_length
+
+def test_order_crossover_init_random_segment_length():
+    crossover = OrderCrossover(None)
+    l = 5
+    segment_length = crossover.get_segment_length(l)
+    # one different
+    for i in range(1000):
+        generated = crossover.get_segment_length(l)
+        if generated != segment_length:
+            break
+    else:
+        assert False
+    assert generated != segment_length
+
+    # one same
+    for i in range(1000):
+        generated = crossover.get_segment_length(l)
+        if generated == segment_length:
+            break
+    else:
+        assert False
+    assert generated == segment_length
+
 
 def test_order_crossover_get_cross_points():
-    crossover = OrderCrossover(crossover_size_rate)
+    crossover = OrderCrossover(segment_length)
     idx_a, idx_b = crossover.get_cross_points(len(parents[0]))
     assert 0 <= idx_a < idx_b <= len(parents[0])
-    assert idx_b - idx_a == int(crossover_size_rate * len(parents[0]))
+    assert idx_b - idx_a == int(segment_length)
 
 def test_order_crossover_crossover():
-    crossover = OrderCrossover(crossover_size_rate)
+    crossover = OrderCrossover(segment_length)
     par_a, par_b = tuple(parents)
     child_a, child_b = crossover.crossover(parents)
     
@@ -41,7 +64,7 @@ def test_unique_cities():
                 break
         parent1_copy = parent1.copy()
         parent2_copy = parent2.copy()
-        crossover = OrderCrossover(crossover_size_rate)
+        crossover = OrderCrossover(segment_length)
         offspring1, offspring2 = crossover.crossover((parent1, parent2))
         assert parent1_copy == parent1
         assert parent2_copy == parent2

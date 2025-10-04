@@ -4,20 +4,20 @@ parents = (
     [1, 2, 3, 4, 5, 6, 7, 8, 9], 
     [4, 5, 2, 1, 8, 7, 6, 3, 9]
 )
-crossover_size_rate = 0.3
+segment_length = 3
 
 def test_partially_mapped_crossover_init():
-    crossover = PartiallyMappedCrossover(crossover_size_rate)
-    assert crossover.crossover_size_rate == crossover_size_rate
+    crossover = PartiallyMappedCrossover(segment_length)
+    assert crossover.get_segment_length(9999999999) == segment_length
 
 def test_partially_mapped_crossover_get_cross_points():
-    crossover = PartiallyMappedCrossover(crossover_size_rate)
+    crossover = PartiallyMappedCrossover(segment_length)
     idx_a, idx_b = crossover.get_cross_points(len(parents[0]))
     assert 0 <= idx_a < idx_b <= len(parents[0])
-    assert idx_b - idx_a == int(crossover_size_rate * len(parents[0]))
+    assert idx_b - idx_a == int(segment_length)
 
 def test_partially_mapped_crossover_crossover():
-    crossover = PartiallyMappedCrossover(crossover_size_rate)
+    crossover = PartiallyMappedCrossover(segment_length)
     par_a, par_b = tuple(parents)
     child_a, child_b = crossover.crossover(parents)
     
