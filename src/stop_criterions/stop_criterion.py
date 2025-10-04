@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class StopCriterion(ABC):
     @abstractmethod
-    def start(self):
+    def restart(self):
         pass
 
     @abstractmethod

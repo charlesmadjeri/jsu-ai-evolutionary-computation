@@ -4,8 +4,9 @@ class IterationsStopCriterion(StopCriterion):
     def __init__(self, total_iterations: int):
         assert total_iterations > 0
         self.total_iterations = total_iterations
+        self.restart()
 
-    def start(self):
+    def restart(self):
         self.current_iteration = 0
 
     def check(self, total_distance: float):

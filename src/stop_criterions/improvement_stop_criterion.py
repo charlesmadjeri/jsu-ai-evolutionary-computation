@@ -9,8 +9,9 @@ class ImprovementStopCriterion(StopCriterion):
             self.calculate_improvement = lambda current_cost, old_cost: 1. - (current_cost / old_cost)
         else:
             self.calculate_improvement = lambda current_cost, old_cost: 1. - (old_cost / current_cost)
-
-    def start(self):
+        self.restart()
+        
+    def restart(self):
         self.previous_distance = None
         self.improvement = 0
 

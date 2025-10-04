@@ -2,11 +2,12 @@ import time
 from stop_criterions.stop_criterion import StopCriterion
 
 class TimeStopCriterion(StopCriterion):
-    def __init__(self, total_seconds: int):
+    def __init__(self, total_seconds: float):
         assert total_seconds > 0
         self.total_seconds = total_seconds
+        self.restart()
 
-    def start(self):
+    def restart(self):
         self.start_time = time.time()
         self.elapsed_time = 0
 
