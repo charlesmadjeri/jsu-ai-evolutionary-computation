@@ -39,6 +39,9 @@ def test_crossover_abstract_methods():
     
     # Both functions should return None as they only overwrite the abstract methods
     assert crossover.crossover() == None
-    assert crossover.get_cross_points(len(parents[0])) == None
+    assert isinstance(crossover.get_cross_points(len(parents[0])), tuple)
+    assert len(crossover.get_cross_points(len(parents[0]))) == 2
+    assert all(isinstance(i, int) for i in crossover.get_cross_points(len(parents[0])))
+
 
 
