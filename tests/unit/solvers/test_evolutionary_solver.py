@@ -153,7 +153,7 @@ def test_create_new_generation():
         crossover=OrderCrossover(0.3),
         stop_criterions=[],
         population_size=population_size,
-        verbose_level=0,
+        verbose_level=10,
         minimum_iterations=10
     )
     generation = [[0, 1, 2, 3, 4, 5], [5, 4, 3, 2, 0, 1]]
