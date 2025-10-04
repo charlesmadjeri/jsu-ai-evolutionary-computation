@@ -72,6 +72,7 @@ class EvolutionarySolver(Solver):
         
     def solve(self, coordinates: list[tuple[float, float]]) -> tuple[list[int], float]:
         solution_size = len(coordinates)
+            
         for criterion in chain(self.or_criterions, self.and_criterions):
             criterion.start()
         generation = [sample(range(solution_size), solution_size) for _ in range(self.population_size)]

@@ -7,6 +7,32 @@ from stop_criterions.improvement_stop_criterion import ImprovementStopCriterion
 from stop_criterions.time_stop_criterion import TimeStopCriterion
 
 from time import sleep
+from pytest import raises
+
+TEST_COORDINATES = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5)]
+
+def test_init_small_population_size():
+    for population_size in range(3):
+        with raises(ValueError):
+            solver = EvolutionarySolver(
+                elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+                crossover=OrderCrossover(0.3),
+                stop_criterions=[],
+                population_size=population_size,
+                verbose_level=10,
+                minimum_iterations=10
+            )
+
+def test_init_population_less_than_elite_size():
+    with raises(ValueError):
+        solver = EvolutionarySolver(
+            elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=100),
+            crossover=OrderCrossover(0.3),
+            stop_criterions=[],
+            population_size=99,
+            verbose_level=10,
+            minimum_iterations=10
+        )
 
 def test_none_stoppage_criterions():
     minimum_iterations = 10
@@ -114,3 +140,20 @@ def test_multiple_stoppage_criteria_2():
     assert it_crit.current_iteration < it_crit.total_iterations
     assert time_crit.elapsed_time > time_crit.total_seconds
 
+def test_create_new_generation():
+    population_size = 6
+    solver = EvolutionarySolver(
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
+        crossover=OrderCrossover(0.3),
+        stop_criterions=[],
+        population_size=population_size,
+        verbose_level=10,
+        minimum_iterations=10
+    )
+    generation = [[0, 1, 2, 3, 4, 5], [5, 4, 3, 2, 0, 1]]
+    costs = solver.elite_selector.calculate_cost(TEST_COORDINATES, generation)
+    elite = [(generation[i], costs[i]) for i in range(len(generation))]
+    new_gen = solver.create_new_generation(elite)
+    assert len(new_gen) == population_size
+    assert generation[0] in new_gen
+    assert generation[1] in new_gen
