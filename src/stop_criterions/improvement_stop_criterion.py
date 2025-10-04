@@ -1,21 +1,26 @@
-from src.stop_criterions.stop_criterion import StopCriterion
+from stop_criterions.stop_criterion import StopCriterion
 
 class ImprovementStopCriterion(StopCriterion):
-    def __init__(self, min_improvement: float):
+    def __init__(self, min_improvement: float, maximise: bool = False):
         assert min_improvement > 0.
         self.min_improvement = min_improvement
-        self.previous_distance = None
+        self.maximise = maximise
+        if self.maximise:
+            self.calculate_improvement = lambda current_cost, old_cost: 1. - (current_cost / old_cost)
+        else:
+            self.calculate_improvement = lambda current_cost, old_cost: 1. - (old_cost / current_cost)
 
     def start(self):
         self.previous_distance = None
+        self.improvement = 0
 
     def check(self, total_distance: float):
         if self.previous_distance is None:
             self.previous_distance = total_distance
             return True
-        improvement = (total_distance / self.previous_distance) - 1.
+        self.improvement = self.calculate_improvement(total_distance, self.previous_distance)
         self.previous_distance = total_distance
-        return improvement >= self.min_improvement
+        return self.improvement >= self.min_improvement
 
-    def end(self):
-        self.previous_distance = None
+    def __str__(self):
+        return f"ImprovementStopCriterion(min_improvement={self.min_improvement}, latest_improvement={self.improvement})"

@@ -10,5 +10,5 @@ class StopCriterion(ABC):
         pass
 
     @abstractmethod
-    def end(self):
+    def __str__(self):
         pass

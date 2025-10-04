@@ -15,7 +15,6 @@ def test_improvement_stop_criterion():
     assert improvement_stop_criterion.check(1200.) == True
     assert improvement_stop_criterion.previous_distance == pytest.approx(1200.)
     assert improvement_stop_criterion.check(1201.) == False
-    improvement_stop_criterion.end()
     """Case 2: Stopping because of negative improvement."""
     improvement_stop_criterion.start()
     assert improvement_stop_criterion.previous_distance == None
@@ -26,12 +25,13 @@ def test_improvement_stop_criterion():
     assert improvement_stop_criterion.check(140.) == True
     assert improvement_stop_criterion.previous_distance == pytest.approx(140.)
     assert improvement_stop_criterion.check(90.) == False
-    improvement_stop_criterion.end()
     """Case 3: Throw exception on bad initialization."""
     with pytest.raises(AssertionError):
         ImprovementStopCriterion(0.)
     with pytest.raises(AssertionError):
         ImprovementStopCriterion(-1.)
+    """Case 4: Test string representation."""
+    assert ".1" in str(improvement_stop_criterion)
 
 
 def test_iterations_stop_criterion():
@@ -42,12 +42,13 @@ def test_iterations_stop_criterion():
     for i in range(10):
         assert iterations_stop_criterion.check(1234.) == True
     assert iterations_stop_criterion.check(1234.) == False
-    iterations_stop_criterion.end()
     """Case 2: Throw exception on bad initialization."""
     with pytest.raises(AssertionError):
         IterationsStopCriterion(0)
     with pytest.raises(AssertionError):
         IterationsStopCriterion(-1)
+    """Case 3: Test string representation."""
+    assert "10" in str(iterations_stop_criterion)
 
 def test_time_stop_criterion():
     """Test time stop criterion - 1 second"""
@@ -61,4 +62,5 @@ def test_time_stop_criterion():
     assert time_stop_criterion.check(1234.) == True
     time.sleep(0.6)
     assert time_stop_criterion.check(1234.) == False
-    time_stop_criterion.end()
+    """Case 3: Test string representation."""
+    assert "1" in str(time_stop_criterion)
