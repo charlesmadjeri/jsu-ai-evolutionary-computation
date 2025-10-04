@@ -31,8 +31,12 @@ def test_improvement_stop_criterion():
     with pytest.raises(AssertionError):
         ImprovementStopCriterion(-1.)
     """Case 4: Test string representation."""
-    assert ".1" in str(improvement_stop_criterion)
-
+    str_repr = str(improvement_stop_criterion)
+    assert str_repr != ""
+    assert ".1" in str_repr
+    assert str(improvement_stop_criterion.min_improvement) in str_repr
+    assert str(improvement_stop_criterion.improvement) in str_repr
+    
 
 def test_iterations_stop_criterion():
     """Test iterations stop criterion - 10 iterations."""
@@ -48,7 +52,11 @@ def test_iterations_stop_criterion():
     with pytest.raises(AssertionError):
         IterationsStopCriterion(-1)
     """Case 3: Test string representation."""
-    assert "10" in str(iterations_stop_criterion)
+    str_repr = str(iterations_stop_criterion)
+    assert str_repr != ""
+    assert "10" in str_repr
+    assert str(iterations_stop_criterion.current_iteration) in str_repr
+    assert str(iterations_stop_criterion.total_iterations) in str_repr
 
 def test_time_stop_criterion():
     """Test time stop criterion - 1 second"""
@@ -63,4 +71,8 @@ def test_time_stop_criterion():
     time.sleep(0.6)
     assert time_stop_criterion.check(1234.) == False
     """Case 3: Test string representation."""
-    assert "1" in str(time_stop_criterion)
+    str_repr = str(time_stop_criterion)
+    assert str_repr != ""
+    assert "1" in str_repr
+    assert str(time_stop_criterion.elapsed_time) in str_repr
+    assert str(time_stop_criterion.total_seconds) in str_repr
