@@ -6,9 +6,9 @@ class StopCriterion(ABC):
         pass
 
     @abstractmethod
-    def check(self, total_distance: float):
+    def check_continue(self, total_distance: float) -> bool:
         pass
 
     @abstractmethod
-    def __str__(self):
+    def __str__(self) -> str:
         pass
