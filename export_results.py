@@ -10,19 +10,20 @@ def compute_distances(result_list:list[tuple[float,float]])->float:
         x1,y1= result_list[i-1]
         x2,y2= result_list[i]
         total_distance +=math.hypot(x2-x1, y2-y1)
-        return total_distance
+    return total_distance
     
-def generate_csv_export(result_list:list[tuple[float,float]],
-    total_distance:float,csv_path:str):
+def generate_csv_export(result_list:list[tuple[float,float]],total_distance:float,csv_path:str):
         with open(csv_path,mode='w',newline='') as file:
              writer=csv.writer(file)
              writer.writerow(['X','Y'])
              for x,y in result_list:
-                  writer.writerow(['Total Distance', total_distance])
+                 writer.writerow([x, y])
+             writer.writerow([])
+             writer.writerow(['Total Distance', total_distance])
 
 def generate_png_export(result_list:list[tuple[float,float]],result_image:any,image_path:str):
-          if isinstance(result_image,Image.Image):
-        result_image.save(image_path)
+        if isinstance(result_image,Image.Image):
+            result_image.save(image_path)
 
 def export_results(result_list:list[tuple[float,float]],result_image:any):
      timestamp=datetime.now().strftime('%Y-%m-%d %H-%M-%S')
@@ -34,6 +35,7 @@ def export_results(result_list:list[tuple[float,float]],result_image:any):
 
      total_distance=compute_distances(result_list)
 
-    # generate_csv_export(result_list,total_distance,csv_path)
-    # generate_png_export(result_list,result_image,image_path)  
-    #  return csv_path,image_path 
+    #  generate_csv_export(result_list, total_distance, csv_path)
+    #  generate_png_export(result_list, result_image, image_path) 
+ 
+    #  return csv_path, image_path 
