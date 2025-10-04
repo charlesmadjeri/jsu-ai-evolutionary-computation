@@ -14,10 +14,10 @@ class EliteSelector():
                 cost[i] += self.cost_calculator.calculate(self.coordinates[generation[i][j-1]], self.coordinates[generation[i][j]])
         return cost
     
-    def find_elite_elements(self, generation) -> list[list[int]]:
+    def find_elite_elements(self, generation) -> list[tuple[list[int], float]]:
         elites = []
-        cost = self.calculate_cost(generation)
-        for i in sorted(cost)[:self.elite_size]:
-            elites.append(generation[cost.index(i)])
-            cost[cost.index(i)] = float('inf')
+        original_costs = self.calculate_cost(generation)
+        top_costs = sorted(enumerate(original_costs), key=lambda x: x[1])[:self.elite_size]
+        for idx, cost_value in top_costs:
+            elites.append((generation[idx], cost_value))
         return elites

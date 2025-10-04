@@ -41,38 +41,41 @@ def test_elite_selector_find_elite_elements():
     elites = elite_selector.find_elite_elements(parents)
     assert len(elites) == elite_size
     for elite in elites:
-        assert elite in parents
+        assert elite[0] in parents
 
 def test_elite_selector_elites_are_lowest_cost():
     costs = elite_selector.calculate_cost(parents)
     elites = elite_selector.find_elite_elements(parents)
-    elite_costs = [costs[parents.index(elite)] for elite in elites]
+    elite_costs = [costs[parents.index(elite[0])] for elite in elites]
     sorted_costs = sorted(costs)[:elite_size]
     assert sorted(elite_costs) == sorted_costs
 
 def test_elite_selector_no_duplicates_in_elites():
     elites = elite_selector.find_elite_elements(parents)
-    assert len(elites) == len(set(tuple(elite) for elite in elites))
+    assert len(elites) == len(set(tuple(elite[0]) for elite in elites))
     
-
 def test_elite_selector_handles_ties():
     tied_parents = [
         [0, 1, 2],
-        [0, 1, 2],
         [1, 2, 0],
+        [2, 1, 0],
         [2, 0, 1]
     ]
     tied_coords = [
         (0, 0),
-        (1, 0),
-        (0, 1)
+        (0, 5),
+        (0, 10)
     ]
     elite_size_tie = 2
     elite_selector_tie = EliteSelector(tied_coords, ManhattanCostCalculation, elite_size_tie)
     elites_tie = elite_selector_tie.find_elite_elements(tied_parents)
     assert len(elites_tie) == elite_size_tie
-    for elite in elites_tie:
-        assert elite in tied_parents
+    real_elite = [[0, 1, 2], [2, 1, 0]]
+    assert elites_tie[0][0] in real_elite
+    assert elites_tie[1][0] in real_elite
+    assert elites_tie[0][0] != elites_tie[1][0]
+    assert elites_tie[0][1] == elites_tie[1][1]
+
 
 def test_elite_selector_empty_generation():
     empty_selector = EliteSelector(coord, ManhattanCostCalculation, elite_size)
