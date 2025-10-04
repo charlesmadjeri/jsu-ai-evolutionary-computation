@@ -1,6 +1,8 @@
 from src.elite_selector.elite_selector import EliteSelector
 from src.cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
 
+from pytest import raises
+
 parents = [
     [0, 1, 2, 3, 4, 5, 6, 7, 8], 
     [3, 4, 1, 0, 7, 6, 5, 2, 8],
@@ -31,6 +33,11 @@ elite_selector  = EliteSelector(ManhattanCostCalculation, elite_size)
 def test_elite_selector_init():
     assert elite_selector.cost_calculator == ManhattanCostCalculation
     assert elite_selector.elite_size == elite_size
+
+def test_elite_selector_init_small_elite_size():
+    for elite_size in range(-1, 2):
+        with raises(ValueError):
+            EliteSelector(ManhattanCostCalculation, elite_size=elite_size)
 
 def test_elite_selector_calculate_cost():
     cost = elite_selector.calculate_cost(coord, parents)

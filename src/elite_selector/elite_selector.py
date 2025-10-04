@@ -2,6 +2,9 @@ from src.cost_calculation.cost_calculation import CostCalculation
 
 class EliteSelector():
     def __init__(self, cost_calculator: CostCalculation, elite_size: int):
+        if elite_size < 2:
+            raise ValueError(f"Elite size must be greater than 2, but got elite_size={elite_size}")
+        
         self.cost_calculator = cost_calculator
         self.elite_size = elite_size
 
