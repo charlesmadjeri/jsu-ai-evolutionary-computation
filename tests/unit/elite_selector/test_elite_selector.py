@@ -26,32 +26,31 @@ coord = [
 
 elite_size = 4
 
-elite_selector  = EliteSelector(coord, ManhattanCostCalculation, elite_size)
+elite_selector  = EliteSelector(ManhattanCostCalculation, elite_size)
 
 def test_elite_selector_init():
-    assert elite_selector.coordinates == coord
     assert elite_selector.cost_calculator == ManhattanCostCalculation
     assert elite_selector.elite_size == elite_size
 
 def test_elite_selector_calculate_cost():
-    cost = elite_selector.calculate_cost(parents)
-    assert len(cost) == len(elite_selector.coordinates) - 1
+    cost = elite_selector.calculate_cost(coord, parents)
+    assert len(cost) == len(coord) - 1
 
 def test_elite_selector_find_elite_elements():
-    elites = elite_selector.find_elite_elements(parents)
+    elites = elite_selector.find_elite_elements(coord, parents)
     assert len(elites) == elite_size
     for elite in elites:
         assert elite[0] in parents
 
 def test_elite_selector_elites_are_lowest_cost():
-    costs = elite_selector.calculate_cost(parents)
-    elites = elite_selector.find_elite_elements(parents)
+    costs = elite_selector.calculate_cost(coord, parents)
+    elites = elite_selector.find_elite_elements(coord, parents)
     elite_costs = [costs[parents.index(elite[0])] for elite in elites]
     sorted_costs = sorted(costs)[:elite_size]
     assert sorted(elite_costs) == sorted_costs
 
 def test_elite_selector_no_duplicates_in_elites():
-    elites = elite_selector.find_elite_elements(parents)
+    elites = elite_selector.find_elite_elements(coord, parents)
     assert len(elites) == len(set(tuple(elite[0]) for elite in elites))
     
 def test_elite_selector_handles_ties():
@@ -67,8 +66,8 @@ def test_elite_selector_handles_ties():
         (0, 10)
     ]
     elite_size_tie = 2
-    elite_selector_tie = EliteSelector(tied_coords, ManhattanCostCalculation, elite_size_tie)
-    elites_tie = elite_selector_tie.find_elite_elements(tied_parents)
+    elite_selector_tie = EliteSelector(ManhattanCostCalculation, elite_size_tie)
+    elites_tie = elite_selector_tie.find_elite_elements(tied_coords, tied_parents)
     assert len(elites_tie) == elite_size_tie
     real_elite = [[0, 1, 2], [2, 1, 0]]
     assert elites_tie[0][0] in real_elite
@@ -78,16 +77,16 @@ def test_elite_selector_handles_ties():
 
 
 def test_elite_selector_empty_generation():
-    empty_selector = EliteSelector(coord, ManhattanCostCalculation, elite_size)
-    elites_empty = empty_selector.find_elite_elements([])
+    empty_selector = EliteSelector(ManhattanCostCalculation, elite_size)
+    elites_empty = empty_selector.find_elite_elements(coord, [])
     assert elites_empty == []
 
 def test_cost_calculation_vs_manual():
     cost_calculator = ManhattanCostCalculation
     coordinates = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5)]
-    elite_selector = EliteSelector(coordinates, cost_calculator, 2)
+    elite_selector = EliteSelector(cost_calculator, 2)
     generation = [[0, 1, 2, 3, 4, 5], [5, 4, 3, 2, 1, 0], [2, 3, 4, 5, 0, 1], [4, 3, 2, 1, 0, 5]]
-    costs = elite_selector.calculate_cost(generation)
+    costs = elite_selector.calculate_cost(coordinates, generation)
     for i in range(len(generation)):
         cost = 0
         for j in range(1, len(generation[i])):

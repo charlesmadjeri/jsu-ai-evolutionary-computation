@@ -1,22 +1,21 @@
 from src.cost_calculation.cost_calculation import CostCalculation
 
 class EliteSelector():
-    def __init__(self, coordinates: list[tuple[float, float]], cost_calculator: CostCalculation, elite_size: int):
-        self.coordinates = coordinates
+    def __init__(self, cost_calculator: CostCalculation, elite_size: int):
         self.cost_calculator = cost_calculator
         self.elite_size = elite_size
 
-    def calculate_cost(self, generation) -> list[float]:
+    def calculate_cost(self, coordinates: list[tuple[float, float]], generation) -> list[float]:
         cost = []
         for i in range(len(generation)):
             cost.append(0)
             for j in range(1, len(generation[i])):
-                cost[i] += self.cost_calculator.calculate(self.coordinates[generation[i][j-1]], self.coordinates[generation[i][j]])
+                cost[i] += self.cost_calculator.calculate(coordinates[generation[i][j-1]], coordinates[generation[i][j]])
         return cost
     
-    def find_elite_elements(self, generation) -> list[tuple[list[int], float]]:
+    def find_elite_elements(self, coordinates: list[tuple[float, float]], generation) -> list[tuple[list[int], float]]:
         elites = []
-        original_costs = self.calculate_cost(generation)
+        original_costs = self.calculate_cost(coordinates, generation)
         top_costs = sorted(enumerate(original_costs), key=lambda x: x[1])[:self.elite_size]
         for idx, cost_value in top_costs:
             elites.append((generation[idx], cost_value))
