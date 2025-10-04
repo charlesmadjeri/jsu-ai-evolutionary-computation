@@ -15,11 +15,11 @@ def test_init_small_population_size():
     for population_size in range(3):
         with raises(ValueError):
             solver = EvolutionarySolver(
-                elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+                elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
                 crossover=OrderCrossover(0.3),
                 stop_criterions=[],
                 population_size=population_size,
-                verbose_level=10,
+                verbose_level=0,
                 minimum_iterations=10
             )
 
@@ -30,20 +30,23 @@ def test_init_population_less_than_elite_size():
             crossover=OrderCrossover(0.3),
             stop_criterions=[],
             population_size=99,
-            verbose_level=10,
+            verbose_level=0,
             minimum_iterations=10
         )
 
 def test_none_stoppage_criterions():
     minimum_iterations = 10
     solver = EvolutionarySolver(
-        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
         crossover=OrderCrossover(0.3),
         stop_criterions=[],
         population_size=100,
-        verbose_level=10,
+        verbose_level=0,
         minimum_iterations=minimum_iterations
     )
+
+    assert solver.or_criterions == []
+    assert solver.has_or_criterions == False
 
     for i in range(minimum_iterations):
         assert solver.check_should_stop(i) == False
@@ -53,13 +56,14 @@ def test_one_iteration_stoppage_criterion():
     minimum_iterations = 10
     it_crit = IterationsStopCriterion(minimum_iterations * 2)
     solver = EvolutionarySolver(
-        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
         crossover=OrderCrossover(0.3),
         stop_criterions=[it_crit],
         population_size=100,
-        verbose_level=10,
+        verbose_level=0,
         minimum_iterations=minimum_iterations
     )
+    assert solver.has_or_criterions == True
 
     for i in range(it_crit.total_iterations):
         assert solver.check_should_stop(i) == False
@@ -69,11 +73,11 @@ def test_one_time_stoppage_criterion():
     time_crit = TimeStopCriterion(.2)
     min_it = 10
     solver = EvolutionarySolver(
-        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
         crossover=OrderCrossover(0.3),
         stop_criterions=[time_crit],
         population_size=100,
-        verbose_level=10,
+        verbose_level=0,
         minimum_iterations=min_it
     )
 
@@ -86,11 +90,11 @@ def test_one_improvement_stoppage_criterion():
     improvement_crit = ImprovementStopCriterion(0.1)
     min_it = 10
     solver = EvolutionarySolver(
-        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
         crossover=OrderCrossover(0.3),
         stop_criterions=[improvement_crit],
         population_size=100,
-        verbose_level=10,
+        verbose_level=0,
         minimum_iterations=min_it
     )
 
@@ -107,13 +111,15 @@ def test_multiple_stoppage_criteria():
     it_crit = IterationsStopCriterion(2 * min_it)
     time_crit = TimeStopCriterion(100.)
     solver = EvolutionarySolver(
-        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
         crossover=OrderCrossover(0.3),
         stop_criterions=[it_crit, time_crit],
         population_size=100,
-        verbose_level=10,
+        verbose_level=0,
         minimum_iterations=min_it
     )
+
+    assert solver.or_criterions == [it_crit, time_crit]
 
     for i in range(it_crit.total_iterations):
         assert solver.check_should_stop(i) == False
@@ -126,11 +132,11 @@ def test_multiple_stoppage_criteria_2():
     it_crit = IterationsStopCriterion(2 * min_it)
     time_crit = TimeStopCriterion(.0000000000001)
     solver = EvolutionarySolver(
-        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=1),
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
         crossover=OrderCrossover(0.3),
         stop_criterions=[it_crit, time_crit],
         population_size=100,
-        verbose_level=10,
+        verbose_level=0,
         minimum_iterations=min_it
     )
 
@@ -147,7 +153,7 @@ def test_create_new_generation():
         crossover=OrderCrossover(0.3),
         stop_criterions=[],
         population_size=population_size,
-        verbose_level=10,
+        verbose_level=0,
         minimum_iterations=10
     )
     generation = [[0, 1, 2, 3, 4, 5], [5, 4, 3, 2, 0, 1]]
@@ -157,3 +163,59 @@ def test_create_new_generation():
     assert len(new_gen) == population_size
     assert generation[0] in new_gen
     assert generation[1] in new_gen
+
+def test_solve_works():
+    solver = EvolutionarySolver(
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
+        crossover=OrderCrossover(0.3),
+        stop_criterions=[],
+        population_size=100,
+        verbose_level=0,
+        minimum_iterations=10
+    )
+    for _ in range(20): 
+        solution = solver.solve(TEST_COORDINATES)
+        assert len(solution[0]) == len(TEST_COORDINATES)
+        # print(solution)
+        assert solution[1] > 0.
+        assert solver.and_criterions[0].current_iteration > solver.and_criterions[0].total_iterations
+
+def test_solve_solver_stops():
+    iterations_crit = IterationsStopCriterion(10)
+    solver = EvolutionarySolver(
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
+        crossover=OrderCrossover(0.3),
+        stop_criterions=[iterations_crit],
+        population_size=100,
+        verbose_level=0,
+        minimum_iterations=5
+    )
+    for _ in range(20): 
+        solution = solver.solve(TEST_COORDINATES)
+        # print(solution)
+        assert len(solution[0]) == len(TEST_COORDINATES)
+        assert solution[1] > 0.
+        assert iterations_crit.current_iteration > iterations_crit.total_iterations > solver.and_criterions[0].total_iterations
+
+def test_solve_returns_at_least_one_different_solution():
+    solver = EvolutionarySolver(
+        elite_selector=EliteSelector(ManhattanCostCalculation, elite_size=2),
+        crossover=OrderCrossover(0.3),
+        stop_criterions=[],
+        population_size=100,
+        verbose_level=0,
+        minimum_iterations=10
+    )
+    solution = solver.solve(TEST_COORDINATES)
+    assert len(solution[0]) == len(TEST_COORDINATES)
+    assert solution[1] > 0.
+    for _ in range(1000): 
+        new_solution = solver.solve(TEST_COORDINATES)
+        # print(new_solution)
+        assert len(solution[0]) == len(TEST_COORDINATES)
+        assert solution[1] > 0.
+        if solution != new_solution:
+            break
+        solution = new_solution
+    else:
+        assert False

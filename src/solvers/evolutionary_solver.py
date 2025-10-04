@@ -74,19 +74,14 @@ class EvolutionarySolver(Solver):
         solution_size = len(coordinates)
             
         for criterion in chain(self.or_criterions, self.and_criterions):
-            criterion.start()
+            criterion.restart()
         generation = [sample(range(solution_size), solution_size) for _ in range(self.population_size)]
         
         while True:
-            # TODO update find_elite_elements to contain also total distance -> list[tuple(list[int], float)]
-            elites = self.elite_selector.find_elite_elements(generation)
+            elites = self.elite_selector.find_elite_elements(coordinates, generation)
 
-            # check stoppage criterions
-            # TODO: verify that this is correct && if we use maximisation it should be reversed
             elites.sort(key=lambda x: x[1])
             best_distance = elites[0][1]
-            # TODO REMOVEME
-            assert best_distance <= elites[1][1]
             
             if self.check_should_stop(best_distance):
                 break
