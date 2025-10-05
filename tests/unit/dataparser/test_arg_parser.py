@@ -1,5 +1,5 @@
 from load_csv import load_csv
-import src.dataparser.arg_parser as arg_parser
+import dataparser.arg_parser as arg_parser
 from pytest import raises, approx
 from argparse import ArgumentTypeError
 

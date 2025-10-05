@@ -1,6 +1,6 @@
 import pytest
 
-from src.crossover.crossover import Crossover
+from crossover.crossover import Crossover
 
 parents = (
     [1, 2, 3, 4, 5, 6, 7, 8, 9], 

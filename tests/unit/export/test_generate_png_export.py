@@ -2,7 +2,7 @@ import pytest
 from io import BytesIO
 from PIL import Image
 import matplotlib.pyplot as plt
-from src.export.generate_png_export import (
+from export.generate_png_export import (
     compute_bounds,
     draw_map,
     get_png_bytes,

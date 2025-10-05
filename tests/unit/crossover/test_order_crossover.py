@@ -1,5 +1,5 @@
 from random import sample, shuffle
-from src.crossover.order_crossover import OrderCrossover
+from crossover.order_crossover import OrderCrossover
 
 parents = (
     [1, 2, 3, 4, 5, 6, 7, 8, 9], 

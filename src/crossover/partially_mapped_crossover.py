@@ -1,4 +1,4 @@
-from src.crossover.crossover import Crossover
+from crossover.crossover import Crossover
 
 class PartiallyMappedCrossover(Crossover):
     def __init__(self, segment_length: int | None):

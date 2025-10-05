@@ -1,5 +1,5 @@
 import pytest
-from src.dataparser.dot_tsp_parser import load_tsp_data
+from dataparser.dot_tsp_parser import load_tsp_data
 
 def test_load_tsp_data_invalid_extension():
     path = "data/dataset.csv"

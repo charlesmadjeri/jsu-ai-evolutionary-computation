@@ -1,4 +1,4 @@
-from src.crossover.partially_mapped_crossover import PartiallyMappedCrossover
+from crossover.partially_mapped_crossover import PartiallyMappedCrossover
 
 parents = (
     [1, 2, 3, 4, 5, 6, 7, 8, 9], 

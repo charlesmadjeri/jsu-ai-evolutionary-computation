@@ -3,7 +3,7 @@ import os
 import tempfile
 import pytest
 from PIL import Image
-from src.export.export_results import compute_distances, generate_csv_export, generate_png_export
+from export.export_results import compute_distances, generate_csv_export, generate_png_export
 
 def test_compute_distances():
     points = [(0, 0), (3, 4), (6, 8)]

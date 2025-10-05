@@ -1,8 +1,8 @@
-from src.cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
-from src.elite_selector.elite_selector import EliteSelector
-from src.solvers.evolutionary_solver import EvolutionarySolver
-from src.stop_criterions.iterations_stop_criterion import IterationsStopCriterion
-from src.crossover.order_crossover import OrderCrossover
+from cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
+from elite_selector.elite_selector import EliteSelector
+from solvers.evolutionary_solver import EvolutionarySolver
+from stop_criterions.iterations_stop_criterion import IterationsStopCriterion
+from crossover.order_crossover import OrderCrossover
 from stop_criterions.improvement_stop_criterion import ImprovementStopCriterion
 from stop_criterions.time_stop_criterion import TimeStopCriterion
 
