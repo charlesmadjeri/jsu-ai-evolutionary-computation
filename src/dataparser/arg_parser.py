@@ -94,6 +94,9 @@ def float_checker(value, min, max):
 Checks if the value is an integer or a float using int_checker and float_checker
 """
 def int_or_float_checker(value, int_min, int_max, float_min, float_max, none_allowed=False):
+    if isinstance(value, str) and value.lower() == "none":
+        value = None
+
     if value is None:
         if none_allowed:
             return None
@@ -188,21 +191,21 @@ def parse_main(args=None):
         return result
 
     population_size = parsed_args.population_size
+    cities_count = len(dataset)
     if isinstance(population_size, float):
-        population_size = int(population_size * len(dataset))
-    elif population_size < 3:
-        ## Need 2 parents and 1 child minimum
-        raise ValueError(f"Population size must be greater than 2, but got {population_size}")
-
+        population_size = max(3, int(.5 + population_size * cities_count))
+    
     elite_size = parsed_args.elite_size
     if isinstance(elite_size, float):
-        elite_size = max(2, min(int(elite_size * population_size), population_size - 1))
+        elite_size = max(2, min(int(.5 + elite_size * population_size), population_size - 1))
 
     segment_length = parsed_args.crossover_segment
     if isinstance(segment_length, float):
-        l = len(dataset[0])
-        segment_length = max(1, min(int(segment_length * l), l - 1))
-    
+        segment_length = max(1, min(int(.5 + segment_length * cities_count), cities_count - 1))
+    elif isinstance(segment_length, int):
+        if segment_length >= cities_count:
+            raise ValueError(f"Invalid crossover segment length: {segment_length}")
+
     if parsed_args.crossover_type == 'order':
         crossover = OrderCrossover(segment_length)
     elif parsed_args.crossover_type == 'partially-ordered':

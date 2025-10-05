@@ -141,21 +141,7 @@ def test_parse_main_invalid_csv():
     wrong_txt_file = TempFile(suffix=".txt")
     raises(ValueError, arg_parser.parse_main, [wrong_txt_file.path, "-sit", "10"])
 
-def test_parse_main_all_short_args():
-    res = arg_parser.parse_main([
-        tmp_csv_file.path, 
-        "-ps", "10",
-        "-es", "3", 
-        "-cr", "order", 
-        "-cs", "5", 
-        "-sit", "10", 
-        "-shr", "1",
-        "-smin", "-10", 
-        "-ssec", "10",
-        "-sim", "0.001", 
-        "-cc", "manhattan", 
-        "-vvv", 
-    ])
+def helper_all_args(res):
     solver = res["solver"]
     assert res["dataset"] == input_data
     assert len(res["dataset"]) == cities_count == 10
@@ -195,3 +181,182 @@ def test_parse_main_all_short_args():
     assert improvement_crit.min_improvement == approx(0.001)
 
     assert solver.elite_selector.cost_calculator == arg_parser.ManhattanCostCalculation
+
+
+def test_parse_main_all_short_args():
+    res = arg_parser.parse_main([
+        tmp_csv_file.path, 
+        "-ps", "10",
+        "-es", "3", 
+        "-cr", "order", 
+        "-cs", "5", 
+        "-sit", "10", 
+        "-shr", "1",
+        "-smin", "-10", 
+        "-ssec", "10",
+        "-sim", "0.001", 
+        "-cc", "manhattan", 
+        "-vvv", 
+    ])
+    helper_all_args(res)
+
+def test_parse_main_all_long_args():
+    res = arg_parser.parse_main([
+        tmp_csv_file.path, 
+        "--population-size", "10",
+        "--elite-size", "3", 
+        "--crossover-type", "order", 
+        "--crossover-segment", "5", 
+        "--stop-iterations", "10", 
+        "--stop-hours", "1",
+        "--stop-minutes", "-10", 
+        "--stop-seconds", "10",
+        "--stop-improvement", "0.001", 
+        "--cost-calculator", "manhattan", 
+        "--verbose", "3",
+    ])
+    helper_all_args(res)
+
+def test_parse_main_cost_calculator():
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1"
+    ])
+    assert res["solver"].elite_selector.cost_calculator == arg_parser.ManhattanCostCalculation
+
+    res = arg_parser.parse_main([
+        tmp_csv_file.path, 
+        "--cost-calculator", "manhattan", 
+        "-shr", "1",
+    ])
+    assert res["solver"].elite_selector.cost_calculator == arg_parser.ManhattanCostCalculation
+
+    res = arg_parser.parse_main([
+        tmp_csv_file.path, 
+        "--cost-calculator", "euclidean", 
+        "-shr", "1",
+    ])
+    assert res["solver"].elite_selector.cost_calculator == arg_parser.EuclideanCostCalculation
+
+    raises(SystemExit, arg_parser.parse_main, [
+        tmp_csv_file.path, 
+        "--cost-calculator", "invalid", 
+        "-shr", "1",
+    ])
+
+def test_parse_main_gf_ignores_other_args():
+    res = arg_parser.parse_main([
+        tmp_csv_file.path, 
+        "--population-size", "9999999999",
+        "--elite-size", "9999999999", 
+        "--crossover-segment", "9999999999", 
+        "--stop-iterations", "9999999999", 
+        "--stop-hours", "9999999999",
+        "--stop-minutes", "9999999999", 
+        "--stop-seconds", "9999999999",
+        "--stop-improvement", "1.23", 
+        "--greedy-first"
+    ])
+    assert isinstance(res["solver"], arg_parser.GreedyFirst)
+
+def test_parse_main_population_size():
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+            "-shr", "1",
+            "--population-size", "0.5",
+    ])
+    assert res["solver"].population_size == int(len(input_data) / 2) == 5
+
+    # minimum population size is 3
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--population-size", "0.00000000000001",
+    ])
+    assert res["solver"].population_size == 3
+
+def test_parse_main_elite_size():
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--elite-size", "0.5",
+        "--population-size", "8",
+    ])
+    assert res["solver"].elite_selector.elite_size == int(8 / 2) == 4
+
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--elite-size", "4",
+        "--population-size", "8",
+    ])
+    assert res["solver"].elite_selector.elite_size == 4
+
+    # minimum elite size is 2
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--elite-size", ".00000000000001",
+        "--population-size", "8",
+    ])
+    assert res["solver"].elite_selector.elite_size == 2
+
+    # maximum elite size is population size - 1
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--elite-size", ".99999999999999",
+        "--population-size", "8",
+    ])
+    assert res["solver"].elite_selector.elite_size == 7
+    
+    # check expected rounding
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--elite-size", ".50000000000001",
+        "--population-size", "7",
+    ])
+    assert res["solver"].elite_selector.elite_size == 4
+
+    # elite size can't be greater than population size - 1
+    raises(ValueError, arg_parser.parse_main, [
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--elite-size", "8",
+        "--population-size", "8",
+    ])
+
+    raises(ValueError, arg_parser.parse_main, [
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--elite-size", "800",
+        "--population-size", "8",
+    ])
+
+def test_parse_main_crossover_segment():
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--crossover-segment", "0.5",
+    ])
+    assert res["solver"].crossover.segment_length == int(cities_count / 2) == 5
+
+    res = arg_parser.parse_main([
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--crossover-segment", "none",
+    ])
+    assert res["solver"].crossover.segment_length == None
+
+    raises(ValueError, arg_parser.parse_main, [
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--crossover-segment", "999999",
+    ])
+
+    raises(ValueError, arg_parser.parse_main, [
+        tmp_csv_file.path,
+        "-shr", "1",
+        "--crossover-segment", str(cities_count),
+    ])
