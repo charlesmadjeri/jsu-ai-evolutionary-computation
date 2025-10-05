@@ -2,6 +2,7 @@ from argparse import ArgumentTypeError, ArgumentParser
 
 from crossover.order_crossover import OrderCrossover
 from crossover.partially_mapped_crossover import PartiallyMappedCrossover
+from dataparser.dot_tsp_parser import load_tsp_data
 from elite_selector.elite_selector import EliteSelector
 from load_csv import load_csv
 from solvers.evolutionary_solver import EvolutionarySolver
@@ -157,15 +158,19 @@ Main parser for the application
 def parse_main(args=None):
     parsed_args = main_parser.parse_args(args)
 
-    dataset = load_csv(parsed_args.input_path)
+    # dataset = load_csv(parsed_args.input_path)
+    dataset = load_tsp_data(parsed_args.input_path)
     if len(dataset) == 0:
         raise ValueError(f"File {parsed_args.input_path} is empty")
     
     if not path.exists(parsed_args.input_path):
         raise ValueError(f"File {parsed_args.input_path} does not exist")
-    if not parsed_args.input_path.endswith('.csv'):
-        raise ValueError(f"File {parsed_args.input_path} is not a .csv file")
+    # if not parsed_args.input_path.endswith('.csv'):
+    #     raise ValueError(f"File {parsed_args.input_path} is not a .csv file")
+    if not parsed_args.input_path.endswith('.tsp'):
+        raise ValueError(f"File {parsed_args.input_path} is not a .tsp file")
     
+    dataset = [(float(x), float(y)) for x, y in dataset]
 
     if parsed_args.cost_calculator == 'manhattan':
         cost_calculator = ManhattanCostCalculation
