@@ -88,7 +88,7 @@ pytest tests/export/test_generate_png_export.py::test_compute_bounds
 
 ```python
 import pytest
-from src.module import function_to_test
+from module import function_to_test
 
 def test_function_with_valid_input():
     """Test function behavior with a valid input."""

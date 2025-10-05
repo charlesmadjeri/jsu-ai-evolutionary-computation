@@ -1,8 +1,8 @@
 import time
 import pytest
-from src.stop_criterions.improvement_stop_criterion import ImprovementStopCriterion
-from src.stop_criterions.iterations_stop_criterion import IterationsStopCriterion
-from src.stop_criterions.time_stop_criterion import TimeStopCriterion
+from stop_criterions.improvement_stop_criterion import ImprovementStopCriterion
+from stop_criterions.iterations_stop_criterion import IterationsStopCriterion
+from stop_criterions.time_stop_criterion import TimeStopCriterion
 
 def test_improvement_stop_criterion():
     """Test improvement stop criterion - 10% improvement."""

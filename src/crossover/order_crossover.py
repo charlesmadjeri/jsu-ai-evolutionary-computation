@@ -1,8 +1,8 @@
-from src.crossover.crossover import Crossover
+from crossover.crossover import Crossover
 
 class OrderCrossover(Crossover):
-    def __init__(self, crossover_size_rate):
-        super().__init__(crossover_size_rate)
+    def __init__(self, segment_length: int | None):
+        super().__init__(segment_length)
     
     def crossover(self, parents: tuple[list[int], list[int]]) -> tuple[list[int], list[int]]:
         idx_a, idx_b = self.get_cross_points(len(parents[0]))
