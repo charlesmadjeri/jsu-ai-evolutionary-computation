@@ -16,7 +16,7 @@ AI course - Evolutionary computation assignment
 import sys
 import os
 
-from export import generate_png_export
+from export import export_results
 from dataparser.arg_parser import main_parser, parse_main
 from export.export_results import export_results
 
@@ -38,11 +38,7 @@ def main() -> int:
             print(f"Solution points: {solution_points}")            
         print(f"Solution indices: {solution_indices}")
         print(f"Distance: {distance}")
-    # TODO: Replace this with export_results 
-    if parsed_data["export_image"]:
-        generate_png_export.generate_png_export(solution_points)
-    if parsed_data["export_csv"]:
-        export_results.export_results(solution_points)
+    export_results(solution_points, distance, export_image=parsed_data["export_image"], export_csv=parsed_data["export_csv"])
     return 0
 
 if __name__ == "__main__":

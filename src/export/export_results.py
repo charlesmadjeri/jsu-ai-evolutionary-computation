@@ -2,17 +2,10 @@ import csv
 import os
 from datetime import datetime
 from PIL import Image
-import math
 
-def compute_distances(result_list:list[tuple[float,float]])->float:
-    total_distance= 0.0
-    for i in range(1,len(result_list)):
-        x1,y1= result_list[i-1]
-        x2,y2= result_list[i]
-        total_distance +=math.hypot(x2-x1, y2-y1)
-    return total_distance
-    
-def generate_csv_export(result_list:list[tuple[float,float]],total_distance:float,csv_path:str):
+from export.generate_png_export import generate_png_export, save_map
+
+def generate_and_save_csv(result_list:list[tuple[float,float]],total_distance:float,csv_path:str):
         with open(csv_path,mode='w',newline='') as file:
              writer=csv.writer(file)
              writer.writerow(['X','Y'])
@@ -21,11 +14,16 @@ def generate_csv_export(result_list:list[tuple[float,float]],total_distance:floa
              writer.writerow([])
              writer.writerow(['Total Distance', total_distance])
 
-def generate_png_export(result_list:list[tuple[float,float]],result_image:any,image_path:str):
-        if isinstance(result_image,Image.Image):
-            result_image.save(image_path)
+def generate_and_save_png(result_list:list[tuple[float,float]],image_path:str):
+    png_data = generate_png_export(result_list)
+    with open(image_path, 'wb') as f:
+        f.write(png_data)
 
-def export_results(result_list:list[tuple[float,float]],result_image:any):
+
+def export_results(result_list:list[tuple[float,float]], total_distance:float, export_image:bool = True, export_csv:bool = True):
+     if not export_image and not export_csv:
+        return
+    
      timestamp=datetime.now().strftime('%Y-%m-%d %H-%M-%S')
      result_dir= f'results/{timestamp}'
      os.makedirs(result_dir,exist_ok=True)
@@ -33,9 +31,5 @@ def export_results(result_list:list[tuple[float,float]],result_image:any):
      csv_path=os.path.join(result_dir,'results.csv')
      image_path=os.path.join(result_dir,'results.png')
 
-     total_distance=compute_distances(result_list)
-
-    #  generate_csv_export(result_list, total_distance, csv_path)
-    #  generate_png_export(result_list, result_image, image_path) 
- 
-    #  return csv_path, image_path 
+     generate_and_save_csv(result_list, total_distance, csv_path)
+     generate_and_save_png(result_list, image_path) 
