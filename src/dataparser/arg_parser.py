@@ -20,7 +20,7 @@ from os import path
 Stringify the range [min, max]
 """
 def range_to_str(min, max):
-    return f"[{"-inf" if min is None else min}, {"inf" if max is None else max}]"
+    return f"[{'-inf' if min is None else min}, {'inf' if max is None else max}]"
 
 """
 Check if the value is in the range [min, max]
