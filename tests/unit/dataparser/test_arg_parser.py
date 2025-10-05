@@ -2,6 +2,9 @@ import src.dataparser.arg_parser as arg_parser
 from pytest import raises, approx
 from argparse import ArgumentTypeError
 
+from os import path, fdopen, remove
+from tempfile import mkstemp
+
 def test_range_to_str():
     assert arg_parser.range_to_str(min=0, max=10) == "[0, 10]"
     assert arg_parser.range_to_str(min=None, max=10) == "[-inf, 10]"
@@ -83,3 +86,62 @@ def test_int_or_float_checker():
     # none parsing test
     assert arg_parser.int_or_float_checker(value=None, int_min=10, int_max=100, float_min=0, float_max=10, none_allowed=True) is None
     raises(ArgumentTypeError, arg_parser.int_or_float_checker, value=None, int_min=10, int_max=100, float_min=0, float_max=10, none_allowed=False)
+
+def helper_create_valid_csv_path():
+    with open("valid_csv_path.csv", "w") as f:
+        f.write("x,y\n1,2\n3,4\n5,6")
+    return "valid_csv_path.csv"
+
+
+# parse main tests
+
+class TempFile:
+    def __init__(self, content="x,y\n1,2\n3,4\n5,6", dir="./", suffix=".csv"):
+        self.dir = dir
+        self.content = content
+        self.fd = None
+        self.path = None
+        self.fd, self.path = mkstemp(suffix=suffix, dir=self.dir)
+        
+        # Write content to the file
+        with fdopen(self.fd, 'w') as f:
+            f.write(self.content)
+
+    def __del__(self):
+        if self.path and path.exists(self.path):
+            remove(self.path)
+
+tmp_csv_file = TempFile()
+
+def test_parse_main_one_param():
+    res = arg_parser.parse_main([tmp_csv_file.path, "-sit", "10"])
+    assert res["dataset"][0][0] == approx(1)
+    assert res["dataset"][0][1] == approx(2)
+    assert res["dataset"][1][0] == approx(3)
+    assert res["dataset"][1][1] == approx(4)
+    assert res["dataset"][2][0] == approx(5)
+    assert res["dataset"][2][1] == approx(6)
+    assert res["verbose"] == 0
+    assert res["export_image"] == True
+    assert res["export_csv"] == True
+    assert isinstance(res["solver"], arg_parser.EvolutionarySolver)
+
+def test_parse_main_greedy_first():
+    res = arg_parser.parse_main([tmp_csv_file.path, "-gf"])
+    assert res["dataset"][0][0] == approx(1)
+    assert res["dataset"][0][1] == approx(2)
+    assert res["dataset"][1][0] == approx(3)
+    assert res["dataset"][1][1] == approx(4)
+    assert res["dataset"][2][0] == approx(5)
+    assert res["dataset"][2][1] == approx(6)
+    assert res["verbose"] == 0
+    assert res["export_image"] == True
+    assert res["export_csv"] == True
+    assert isinstance(res["solver"], arg_parser.GreedyFirst)
+
+def test_parse_main_invalid_csv():
+    wrong_csv_file = TempFile(content="shouldn't work :)")
+    raises(ValueError, arg_parser.parse_main, [wrong_csv_file.path, "-sit", "10"])
+
+    wrong_txt_file = TempFile(suffix=".txt")
+    raises(ValueError, arg_parser.parse_main, [wrong_txt_file.path, "-sit", "10"])

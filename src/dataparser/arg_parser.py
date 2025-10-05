@@ -124,11 +124,9 @@ main_parser.add_argument('-cr', '--crossover-type', dest='crossover_type', choic
 main_parser.add_argument('-cs', '--crossover-segment', dest='crossover_segment',
                     type=lambda x: int_or_float_checker(x, int_min=1, int_max=None, float_min=0, float_max=1, none_allowed=True), 
                     help=f'Segment length for crossover - if percentage, must be in range {range_to_str(0, 1)}, if integer, must be in range {range_to_str(1, None)}', default=5)
-# # TODO: where is this used?
 # main_parser.add_argument('-mp', '--mutation-probability', dest='mutation_probability',
 #                     type=lambda x: float_checker(x, min=0, max=1), 
 #                     help=f'Probability of mutation - must be in range {range_to_str(0, 1)}', default=.001)
-# # TODO: where is this used?
 # main_parser.add_argument('-ms', '--mutation-step-size', dest='mutation_step_size',
 #                     type=lambda x: int_checker(x, min=0, max=None), 
 #                     help=f'Step size for mutation - must be in range {range_to_str(0, None)}', default=2)
