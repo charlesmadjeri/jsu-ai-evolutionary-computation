@@ -227,8 +227,6 @@ def parse_main(args=None):
             print(f"Warning: total stop seconds is not greater than 0 ({total_stop_seconds}) - no time stop criterion will be used!")
     if parsed_args.stop_improvement is not None:
         stoppage_criteria.append(ImprovementStopCriterion(parsed_args.stop_improvement))
-    if len(stoppage_criteria) == 0:
-        raise ValueError("No stoppage criteria provided!")
 
     result["solver"] = EvolutionarySolver(
         elite_selector=EliteSelector(cost_calculator=cost_calculator, elite_size=elite_size), 
