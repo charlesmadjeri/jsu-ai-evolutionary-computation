@@ -1,7 +1,5 @@
 from itertools import chain
 from random import sample
-from crossover import crossover
-from elite_selector import elite_selector
 from solvers.solver import Solver
 
 from elite_selector.elite_selector import EliteSelector
@@ -19,6 +17,7 @@ class EvolutionarySolver(Solver):
             verbose_level: int = 0,
             # maximise: bool = False, # TODO implement
             minimum_iterations: int = 25):
+        
         if population_size < 3 or population_size <= elite_selector.elite_size:
             raise ValueError(f"Population size must be greater than 3 and greater than elite size, but got population_size={population_size} and elite_size={elite_selector.elite_size}")
         
@@ -72,7 +71,9 @@ class EvolutionarySolver(Solver):
         
     def solve(self, coordinates: list[tuple[float, float]]) -> tuple[list[int], float]:
         solution_size = len(coordinates)
-            
+        if self.crossover.segment_length is not None and solution_size <= self.crossover.segment_length:
+            raise ValueError(f"Solution size must be greater than crossover segment length, but got solution_size={solution_size} and crossover_segment_length={self.crossover.segment_length}")
+        
         for criterion in chain(self.or_criterions, self.and_criterions):
             criterion.restart()
         generation = [sample(range(solution_size), solution_size) for _ in range(self.population_size)]

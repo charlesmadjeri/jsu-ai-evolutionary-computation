@@ -1,4 +1,4 @@
-from src.cost_calculation.cost_calculation import CostCalculation
+from cost_calculation.cost_calculation import CostCalculation
 
 class EuclideanCostCalculation(CostCalculation):
     def calculate(pt1: tuple[float, float], pt2: tuple[float, float]) -> float:
