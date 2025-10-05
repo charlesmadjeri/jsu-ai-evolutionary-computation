@@ -1,3 +1,4 @@
+from solvers.metric_tracking import MetricTracker
 from solvers.solver import Solver
 from cost_calculation.cost_calculation import CostCalculation
 """
@@ -9,9 +10,10 @@ class GreedyFirst(Solver):
         cost_calculator: CostCalculation - extended CostCalculation class that will be used to calculate the cost between two points.
         minimise_cost: bool - whether to minimise the cost or maximise the cost.
     """
-    def __init__(self, cost_calculator: CostCalculation, minimise_cost=True):
+    def __init__(self, cost_calculator: CostCalculation, minimise_cost=True, metric_tracker: MetricTracker = MetricTracker()):
         self.cost_calculator = cost_calculator
         self.check_is_better_cost = lambda x, y: x < y if minimise_cost else x > y
+        self.metric_tracker = metric_tracker
         
     def solve(self, coordinates: list[tuple[float, float]]) -> tuple[list[int], float]:
         if not coordinates:
