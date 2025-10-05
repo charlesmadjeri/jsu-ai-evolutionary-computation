@@ -13,10 +13,8 @@ Team Members:
 AI course - Evolutionary computation assignment
 """
 
-from ast import arg
 import sys
 import os
-from typing import Optional
 
 from export import generate_png_export
 from dataparser.arg_parser import main_parser, parse_main
@@ -34,8 +32,11 @@ def main() -> int:
         return 1
     solution_indices, distance = parsed_data["solver"].solve(parsed_data["dataset"])
     solution_points = [parsed_data["dataset"][i] for i in solution_indices]
-    if parsed_data["verbose"] > 0:
-        print(f"Solution: {solution_points}")
+    verbose_level = parsed_data["verbose"]
+    if verbose_level > 0:
+        if verbose_level > 1:
+            print(f"Solution points: {solution_points}")            
+        print(f"Solution indices: {solution_indices}")
         print(f"Distance: {distance}")
     # TODO: Replace this with export_results 
     if parsed_data["export_image"]:
