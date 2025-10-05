@@ -42,10 +42,7 @@ def main() -> int:
         generate_png_export.generate_png_export(solution_points)
     if parsed_data["export_csv"]:
         export_results.export_results(solution_points)
-        # generate_csv_export.generate_csv_export(result["solution"], result["distance"], run_data["output_path"])
     return 0
-
-
 
 if __name__ == "__main__":
     sys.exit(main())
