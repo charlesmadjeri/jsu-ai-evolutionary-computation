@@ -1,4 +1,4 @@
-import argparse
+from argparse import ArgumentTypeError, ArgumentParser
 
 from crossover.order_crossover import OrderCrossover
 from crossover.partially_mapped_crossover import PartiallyMappedCrossover
@@ -32,18 +32,41 @@ def range_checker(value, min, max):
     return (min is None or min <= value) and (max is None or value <= max)
 
 """
+Returns True if the value is strict float (not integer), otherwise returns False
+"""
+def check_is_float(value):
+    if isinstance(value, int):
+        return False
+    if isinstance(value, float):
+        return True
+    if isinstance(value, str):
+        try:
+            if value.isalnum():
+                raise ValueError(f"'{value}' is int")
+            value = float(value)
+        except ValueError:
+            return False
+        return True
+
+"""
 Check if the value is an integer and is in the range [min, max]
 Returns the value if it is a valid integer, otherwise returns None
 Raises an argparse.ArgumentTypeError if the value is not in range
 """
 def int_checker(value, min, max):
+    if value is None:
+        return None
+    
+    if check_is_float(value):
+        return None
+    
     try:
         value = int(value)
     except ValueError:
         return None
     
     if not range_checker(value, min, max):
-        raise argparse.ArgumentTypeError(f"'{value}' is not a valid integer in range {range_to_str(min, max)}")
+        raise ArgumentTypeError(f"'{value}' is not a valid integer in range {range_to_str(min, max)}")
     return value
 
 """
@@ -52,28 +75,37 @@ Returns the value if it is a valid float, otherwise returns None
 Raises an argparse.ArgumentTypeError if the value is not in range
 """
 def float_checker(value, min, max):
+    if value is None:
+        return None
+    
+    if not check_is_float(value):
+        return None
+    
     try:
-        if value.isalnum():
-            raise ValueError(f"'{value}' is int")
         value = float(value)
     except ValueError:
         return None
-    
+
     if not range_checker(value, min, max):
-        raise argparse.ArgumentTypeError(f"'{value}' is not a valid float in range {range_to_str(min, max)}")
+        raise ArgumentTypeError(f"'{value}' is not a valid float in range {range_to_str(min, max)}")
     return value
 
 """
 Checks if the value is an integer or a float using int_checker and float_checker
 """
 def int_or_float_checker(value, int_min, int_max, float_min, float_max, none_allowed=False):
+    if value is None:
+        if none_allowed:
+            return None
+        raise ArgumentTypeError("None value is not allowed")
+    
     int_res = int_checker(value, int_min, int_max)
     result = int_res if int_res is not None else float_checker(value, float_min, float_max)
-    if not none_allowed and result is None:
-        raise argparse.ArgumentTypeError(f"'{value}' is not a valid integer or float in range {range_to_str(int_min, int_max)} {range_to_str(float_min, float_max)}")
+    if result is None:
+        raise ArgumentTypeError(f"'{value}' is not a valid integer or float in range int{range_to_str(int_min, int_max)} float{range_to_str(float_min, float_max)}")
     return result
 
-main_parser = argparse.ArgumentParser(
+main_parser = ArgumentParser(
     description='Solver for the Traveling Salesman Problem (TSP) using Evolutionary Computation'
 )
 main_parser.add_argument('-e', '--export', choices=['png', 'csv'], default=['png', 'csv'], nargs='+')
