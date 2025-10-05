@@ -27,6 +27,8 @@ Check if the value is in the range [min, max]
 Returns True if the value is in range, otherwise returns False
 """
 def range_checker(value, min, max):
+    if value is None:
+        return min is None and max is None
     return (min is None or min <= value) and (max is None or value <= max)
 
 """
