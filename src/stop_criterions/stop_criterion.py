@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 
 class StopCriterion(ABC):
     @abstractmethod
-    def start(self):
+    def restart(self):
         pass
 
     @abstractmethod
-    def check(self, total_distance: float):
+    def check_continue(self, total_distance: float) -> bool:
         pass
 
     @abstractmethod
-    def end(self):
+    def __str__(self) -> str:
         pass

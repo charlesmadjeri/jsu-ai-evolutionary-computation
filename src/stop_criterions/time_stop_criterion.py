@@ -1,17 +1,19 @@
 import time
-from src.stop_criterions.stop_criterion import StopCriterion
+from stop_criterions.stop_criterion import StopCriterion
 
 class TimeStopCriterion(StopCriterion):
-    def __init__(self, total_seconds: int):
+    def __init__(self, total_seconds: float):
         assert total_seconds > 0
         self.total_seconds = total_seconds
-        self.start_time = None
+        self.restart()
 
-    def start(self):
+    def restart(self):
         self.start_time = time.time()
+        self.elapsed_time = 0
 
-    def check(self, total_distance: float):
-        return (time.time() - self.start_time) <= self.total_seconds
+    def check_continue(self, total_distance: float) -> bool:
+        self.elapsed_time = time.time() - self.start_time
+        return self.elapsed_time <= self.total_seconds
 
-    def end(self):
-        self.start_time = None
+    def __str__(self) -> str:
+        return f"TimeStopCriterion(total_seconds={self.total_seconds}, elapsed_time={self.elapsed_time})"
