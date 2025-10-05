@@ -13,13 +13,16 @@ def load_tsp_data(file_path: str) -> list[tuple[float, float]]:
 
     with open(file_path, "r") as file:
         while True:
-            line = file.readline()
-            if line == "EOF\n" or re.sub(" +", " ", line) == "\n": # in case no EOF is declared, ex: usa13509
+            try: 
+                line = file.readline()
+                if "EOF" in line or re.sub(" +", " ", line) == "\n": # in case no EOF is declared, ex: usa13509
+                    break
+                if node_coord_section == True:
+                    nodes.append((re.sub(" +", " ", line).strip().split(" ")[1], re.sub(" +", " ", line).strip().split(" ")[2]))
+                if "NODE_COORD_SECTION" in line:
+                    node_coord_section = True
+            except IndexError:
                 break
-            if node_coord_section == True:
-                nodes.append((re.sub(" +", " ", line).strip().split(" ")[1], re.sub(" +", " ", line).strip().split(" ")[2]))
-            if line == "NODE_COORD_SECTION\n":
-                node_coord_section = True
     if nodes == []:
         raise TypeError("Error: Could not retrieve a list of (x, y) coordinates. Try using a file with NODE_COORD_SECTION")
     return nodes
