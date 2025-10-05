@@ -1,5 +1,6 @@
 from itertools import chain
 from random import sample
+from solvers.callbacks.evolutionary_callback import EvolutionaryCallback
 from solvers.solver import Solver
 
 from elite_selector.elite_selector import EliteSelector
@@ -16,6 +17,7 @@ class EvolutionarySolver(Solver):
             population_size: int,
             verbose_level: int = 0,
             # maximise: bool = False, # TODO implement
+            callbacks: list[EvolutionaryCallback] = [],
             minimum_iterations: int = 25):
         
         if population_size < 3 or population_size <= elite_selector.elite_size:
@@ -23,6 +25,7 @@ class EvolutionarySolver(Solver):
         
         self.elite_selector = elite_selector
         self.crossover = crossover
+        self.callbacks = callbacks
         # TODO once 'and' and 'or' logical operators are implemented, use them instead of lists
         self.or_criterions = stop_criterions if isinstance(stop_criterions, list) else []
         self.and_criterions = [IterationsStopCriterion(minimum_iterations)]
@@ -73,19 +76,31 @@ class EvolutionarySolver(Solver):
         solution_size = len(coordinates)
         if self.crossover.segment_length is not None and solution_size <= self.crossover.segment_length:
             raise ValueError(f"Solution size must be greater than crossover segment length, but got solution_size={solution_size} and crossover_segment_length={self.crossover.segment_length}")
-        
+
         for criterion in chain(self.or_criterions, self.and_criterions):
             criterion.restart()
         generation = [sample(range(solution_size), solution_size) for _ in range(self.population_size)]
-        
+
+        for callback in self.callbacks:
+            callback.on_start(coordinates, generation)
+
         while True:
             elites = self.elite_selector.find_elite_elements(coordinates, generation)
 
             elites.sort(key=lambda x: x[1])
             best_distance = elites[0][1]
+
+            for callback in self.callbacks:
+                callback.on_new_elite(elites)
             
             if self.check_should_stop(best_distance):
                 break
             
             generation = self.create_new_generation(elites)            
+
+            for callback in self.callbacks:
+                callback.on_new_generation(generation)
+
+        for callback in self.callbacks:
+            callback.on_end(elites[0])
         return elites[0]
