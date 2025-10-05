@@ -1,6 +1,5 @@
 from solvers.solver import Solver
 from cost_calculation.cost_calculation import CostCalculation
-from solvers.metric_tracking import MetricTracker
 """
 Greedy first algorithm solver implementation.
 """
@@ -13,7 +12,6 @@ class GreedyFirst(Solver):
     def __init__(self, cost_calculator: CostCalculation, minimise_cost=True):
         self.cost_calculator = cost_calculator
         self.check_is_better_cost = lambda x, y: x < y if minimise_cost else x > y
-        self.metric_tracker = MetricTracker()
         
     def solve(self, coordinates: list[tuple[float, float]]) -> tuple[list[int], float]:
         if not coordinates:

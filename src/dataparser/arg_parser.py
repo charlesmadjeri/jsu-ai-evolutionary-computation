@@ -1,5 +1,6 @@
 import argparse
 
+from stop_criterions.threshold_cost_stop_criterion import ThresholdCostStopCriterion
 from stop_criterions.time_stop_criterion import TimeStopCriterion
 from stop_criterions.improvement_stop_criterion import ImprovementStopCriterion
 from stop_criterions.iterations_stop_criterion import IterationsStopCriterion
@@ -106,6 +107,9 @@ def main_parser(args=None):
     parser.add_argument('-sim', '--stop-improvement', required=False, dest='stop_improvement',
                         type=lambda x: float_checker(x, min=0.000000001, max=None),
                         help=f'Stoppage criterion for improvement - must be in range {range_to_str(0.000000001, None)}')
+    parser.add_argument('-st', '--stop-threshold', required=False, dest='cost_threshold',
+                        type=lambda x: int_checker(x, min=0, max=None),
+                        help='Stoppage criterion for cost threshold.')
     parser.add_argument('-cc', '--cost-calculator', dest='cost_calculator', choices=['manhattan', 'euclidean'], default='manhattan')
     # parser.add_argument('-op', '--optimise-cost', dest='optimise_cost', choices=['min', 'max'], default='min') # temporarily disabled - evolutionary computation doesn't support max price (yet)
     parser.add_argument('-gf', '--greedy-first', action='store_true', help='Use greedy first algorithm instead of evolutionary computation. WARNING: This will override most of the other arguments and run greedy first instead of evolutionary computation.', default=False)
@@ -137,6 +141,8 @@ def main_parser(args=None):
 
     # TODO: When logical operators are implemented use them instead of list
     stoppage_criteria = []
+    if parsed_args.stop_threshold is not None:
+        stoppage_criteria.append(ThresholdCostStopCriterion(parsed_args.stop_threshold))
     if parsed_args.stop_iterations is not None:
         stoppage_criteria.append(IterationsStopCriterion(parsed_args.stop_iterations))
     if parsed_args.stop_hours is not None or parsed_args.stop_minutes is not None or parsed_args.stop_seconds is not None:
