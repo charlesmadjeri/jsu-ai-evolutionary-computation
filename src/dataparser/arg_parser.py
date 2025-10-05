@@ -145,7 +145,7 @@ main_parser.add_argument('-ssec', '--stop-seconds', required=False, dest='stop_s
 main_parser.add_argument('-sim', '--stop-improvement', required=False, dest='stop_improvement',
                     type=lambda x: float_checker(x, min=0.000000001, max=None),
                     help=f'Stoppage criterion for improvement - must be in range {range_to_str(0.000000001, None)}')
-main_parser.add_argument('-st', '--stop-threshold', required=False, dest='cost_threshold',
+main_parser.add_argument('-st', '--stop-threshold', required=False, dest='stop_threshold',
                         type=lambda x: int_checker(x, min=0, max=None),
                         help='Stoppage criterion for cost threshold.')
 main_parser.add_argument('-cc', '--cost-calculator', dest='cost_calculator', choices=['manhattan', 'euclidean'], default='manhattan')
