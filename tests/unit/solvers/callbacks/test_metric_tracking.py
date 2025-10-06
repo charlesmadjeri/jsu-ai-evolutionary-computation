@@ -13,3 +13,4 @@ def test_metric_tracking():
     gf2.solve(dataset)
     assert metric_tracker1.metrics == metric_tracker2.metrics == metric_tracker3.metrics
     assert MetricTracker.i == 4 == metric_tracker1.i == metric_tracker2.i == metric_tracker3.i
+    assert metric_tracker1.local_i != metric_tracker2.local_i != metric_tracker3.local_i

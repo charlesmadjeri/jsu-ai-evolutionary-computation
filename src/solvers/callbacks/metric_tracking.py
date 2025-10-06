@@ -7,6 +7,8 @@ class MetricTracker(GreedyFirstCallback):
     def __init__(self):
         super().__init__()
         self.metrics = {}
+        self.local_i = MetricTracker.i
+        MetricTracker.i += 1
 
     def on_start(self, dataset: list[tuple[float, float]], starting_node: int):
         self.log("start_node", starting_node)
@@ -19,11 +21,10 @@ class MetricTracker(GreedyFirstCallback):
     
     def on_end(self, order: list[int], cost: float):
         self.log("final_distance", cost)
-        print(f"\n--- Metrics for run {MetricTracker.i} ---")
+        print(f"\n--- Metrics for run {self.local_i} ---")
         metrics = self.summary()
         pprint(metrics)
         print("------------------------\n")
-        MetricTracker.i += 1
 
     def log(self, name, value):
         if name not in self.metrics:
