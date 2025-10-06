@@ -10,7 +10,7 @@ class MetricTracker(GreedyFirstCallback):
         self.local_i = MetricTracker.i
         MetricTracker.i += 1
 
-    def on_start(self, dataset: list[tuple[float, float]], starting_node: int):
+    def on_start(self, solver, dataset: list[tuple[float, float]], starting_node: int):
         self.log("start_node", starting_node)
     
     def on_iteration(self, processing_node: int):

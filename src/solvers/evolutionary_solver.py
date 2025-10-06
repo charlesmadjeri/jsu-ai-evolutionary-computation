@@ -15,8 +15,6 @@ class EvolutionarySolver(Solver):
             crossover: Crossover, 
             stop_criterions: list[StopCriterion],
             population_size: int,
-            verbose_level: int = 0,
-            # maximise: bool = False, # TODO implement
             callbacks: list[EvolutionaryCallback] = [],
             minimum_iterations: int = 25):
         
@@ -28,7 +26,6 @@ class EvolutionarySolver(Solver):
         self.callbacks = callbacks
         self.or_criterions = stop_criterions if isinstance(stop_criterions, list) else []
         self.and_criterions = [IterationsStopCriterion(minimum_iterations)]
-        self.verbose_level = verbose_level
         self.has_or_criterions = len(self.or_criterions) > 0
         self.population_size = population_size
         
@@ -41,24 +38,10 @@ class EvolutionarySolver(Solver):
     def check_should_stop(self, best_distance: float) -> bool:
         and_stop_results = [not criterion.check_continue(best_distance) for criterion in self.and_criterions]
         or_stop_results = self.get_or_criterions_stop_result(best_distance)
-        should_stop = all(and_stop_results) and any(or_stop_results)
-        if should_stop and self.verbose_level > 0:
-            and_stoppages = []
-            for i in range(len(and_stop_results)):
-                if and_stop_results[i]:
-                        and_stoppages.append(str(self.and_criterions[i]))
-            log_str = "Stoppage criterions met:"
-            if len(and_stoppages) > 0:
-                log_str += f" and[{', '.join(and_stoppages)}]"
-            if self.has_or_criterions:
-                or_stoppages = []
-                for i in range(len(or_stop_results)):
-                    if or_stop_results[i]:
-                        or_stoppages.append(str(self.or_criterions[i]))
-                if len(or_stoppages) > 0:
-                    log_str += f" or[{', '.join(or_stoppages)}]"
-            print(log_str)
-        return should_stop
+        result = all(and_stop_results) and any(or_stop_results)
+        for callback in self.callbacks:
+            callback.on_stop(result, self.and_criterions, and_stop_results, self.or_criterions, or_stop_results)
+        return result
 
     def create_new_generation(self, elites: list[tuple[list[int], float]]) -> list[list[int]]:
         generation = [elite_pair[0] for elite_pair in elites]

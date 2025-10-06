@@ -31,7 +31,6 @@ def test_evolutionary_callback():
         crossover=OrderCrossover(3),
         stop_criterions=[],
         population_size=3,
-        verbose_level=0,
         minimum_iterations=10,
         callbacks=[callback_1, callback_2]
     )

@@ -25,7 +25,7 @@ class GreedyFirst(Solver):
         visited = [remaining.pop(0)]
         
         for callable in self.callbacks:
-            callable.on_start(dataset=coordinates, starting_node=visited[0])
+            callable.on_start(solver=self, dataset=coordinates, starting_node=visited[0])
         
         iteration_i = 0
         while remaining:
