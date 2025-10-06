@@ -20,7 +20,6 @@ def test_init_small_population_size():
                 crossover=DEFAULT_CROSSOVER,
                 stop_criterions=[],
                 population_size=population_size,
-                verbose_level=0,
                 minimum_iterations=10
             )
 
@@ -31,7 +30,6 @@ def test_init_population_less_than_elite_size():
             crossover=DEFAULT_CROSSOVER,
             stop_criterions=[],
             population_size=99,
-            verbose_level=0,
             minimum_iterations=10
         )
 
@@ -42,7 +40,6 @@ def test_none_stoppage_criterions():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=minimum_iterations
     )
 
@@ -61,7 +58,6 @@ def test_one_iteration_stoppage_criterion():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[it_crit],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=minimum_iterations
     )
     assert solver.has_or_criterions == True
@@ -78,7 +74,6 @@ def test_one_time_stoppage_criterion():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[time_crit],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=min_it
     )
 
@@ -95,7 +90,6 @@ def test_one_improvement_stoppage_criterion():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[improvement_crit],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=min_it
     )
 
@@ -116,7 +110,6 @@ def test_multiple_stoppage_criteria():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[it_crit, time_crit],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=min_it
     )
 
@@ -137,7 +130,6 @@ def test_multiple_stoppage_criteria_2():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[it_crit, time_crit],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=min_it
     )
 
@@ -154,7 +146,6 @@ def test_create_new_generation():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[],
         population_size=population_size,
-        verbose_level=10,
         minimum_iterations=10
     )
     generation = [[0, 1, 2, 3, 4, 5], [5, 4, 3, 2, 0, 1]]
@@ -171,7 +162,6 @@ def test_solve_works():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=10
     )
     for _ in range(20): 
@@ -188,7 +178,6 @@ def test_solve_solver_stops():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[iterations_crit],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=5
     )
     for _ in range(20): 
@@ -204,7 +193,6 @@ def test_solve_returns_at_least_one_different_solution():
         crossover=DEFAULT_CROSSOVER,
         stop_criterions=[],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=10
     )
     solution = solver.solve(TEST_COORDINATES)
@@ -227,7 +215,6 @@ def test_solve_error_on_large_segment_length():
         crossover=OrderCrossover(len(TEST_COORDINATES)),
         stop_criterions=[],
         population_size=100,
-        verbose_level=0,
         minimum_iterations=10
     )
     with raises(ValueError):

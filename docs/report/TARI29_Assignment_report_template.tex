@@ -214,7 +214,123 @@ This section describes the setup of experiments \cite{zobel2014experimentation}:
 \end{itemize}
 }
 
-\lipsum[4]
+This section describes the setup of experiments conducted to evaluate and compare the performance of the greedy best-first search baseline with two evolutionary algorithm variants employing different crossover operators.
+
+\subsection{Hardware and Software Specifications}
+
+\subsubsection{Hardware Configuration}
+The experiments were conducted on the following hardware configurations:
+
+\textbf{Configuration 1:}
+\begin{itemize}
+    \item \textbf{Processor}: AMD Ryzen 7 7840HS (16 cores) @ 3.8GHz
+    \item \textbf{Memory}: 48 GB RAM
+    \item \textbf{Operating System}: Linux Ubuntu 24.04
+\end{itemize}
+
+\textbf{Configuration 2:}
+\begin{itemize}
+    \item \textbf{Processor}: Apple M2 Pro (12 cores)
+    \item \textbf{Memory}: 16 GB LPDDR5
+    \item \textbf{Operating System}: macOS Tahoe 26.0.1
+\end{itemize}
+
+\subsubsection{Software Environment}
+The algorithms were implemented using the following software tools:
+\begin{itemize}
+    \item \textbf{Programming Language}: Python 3.12
+    \item \textbf{Libraries and Frameworks}: 
+    \begin{itemize}
+        \item NumPy (numerical computations and array operations)
+        \item Matplotlib (data visualization and convergence plots)
+    \end{itemize}
+    \item \textbf{Development Environment}: Visual Studio Code
+\end{itemize}
+
+\subsection{Experimental Procedure}
+
+\subsubsection{Algorithm Configuration}
+
+\textbf{Design Choices:}
+The evolutionary algorithm employs the following systematic design decisions:
+\begin{itemize}
+    \item \textbf{Selection Method}: Elite selection (fixed design choice ensuring the best individuals are preserved across generations)
+\end{itemize}
+
+\textbf{Configurable Parameters:}
+The following parameters were varied during experimentation:
+\begin{itemize}
+    \item \textbf{Population Size}: \textcolor{red}{[TO BE COMPLETED - configurable parameter, e.g., 50, 100, 200]}
+    \item \textbf{Stopping Criteria}: Configurable termination conditions (iteration-based, time-based, or improvement-based as detailed below)
+    \item \textbf{Crossover Rate}: \textcolor{red}{[TO BE COMPLETED - configurable parameter, e.g., 0.7, 0.8, 0.9]}
+    \item \textbf{Elite Rate}: \textcolor{red}{[TO BE COMPLETED - configurable parameter representing the proportion of population preserved as elite, e.g., 0.1, 0.2, 0.3]}
+\end{itemize}
+
+\subsubsection{Execution Protocol}
+Each algorithm was executed following this protocol:
+\begin{enumerate}
+    \item \textbf{Independent Runs}: Each algorithm configuration was run at least 25 times with different random seeds to account for stochastic variation and ensure statistical validity. \textcolor{red}{[TO BE COMPLETED - specify if more runs were conducted based on stopping criteria]}
+    \item \textbf{Initialization}: For evolutionary algorithms, the initial population was generated using random permutations of city sequences. For the greedy best-first search, different starting cities were used across runs to evaluate sensitivity to initial conditions.
+    \item \textbf{Termination Criteria}: The algorithms employ multiple configurable stopping criteria:
+    \begin{itemize}
+        \item \textbf{Iteration-based}: Maximum number of generations/iterations \textcolor{red}{[TO BE COMPLETED - specify value when used]}
+        \item \textbf{Time-based}: Maximum execution time limit \textcolor{red}{[TO BE COMPLETED - specify duration when used]}
+        \item \textbf{Improvement-based}: Termination when no improvement in best solution is observed for a specified number of consecutive generations \textcolor{red}{[TO BE COMPLETED - specify threshold when used]}
+    \end{itemize}
+    The specific stopping criterion (or combination of criteria) used depends on the experimental configuration.
+    \item \textbf{Performance Recording}: For each run, the best solution quality, average solution quality, and computational time were recorded.
+\end{enumerate}
+
+\subsection{Evaluation Data}
+
+\subsubsection{Problem Instances}
+The algorithms were evaluated on TSP instances of varying sizes to assess scalability and performance:
+\begin{itemize}
+    \item \textbf{Problem Sizes}: \textcolor{red}{[TO BE COMPLETED - e.g., 20, 50, 100, and 200 cities]}
+    \item \textbf{Number of Instances}: \textcolor{red}{[TO BE COMPLETED - e.g., number of instances per problem size]}
+\end{itemize}
+
+\subsubsection{Data Generation}
+The experimental evaluation employs two types of datasets:
+
+\textbf{Benchmark Datasets}: Standard TSP instances from TSPLIB \textcolor{red}{[TO BE COMPLETED - specify which instances, e.g., berlin52, eil76, kroA100]}. These benchmark problems are parsed and stored as arrays of tuples containing city coordinates $(x, y)$.
+
+\textbf{Self-Generated Datasets}: Randomly generated TSP instances \textcolor{red}{[TO BE COMPLETED - specify generation method, e.g., cities with coordinates uniformly distributed in a defined range, number of instances generated]}.
+
+This combination of benchmark and synthetic datasets allows for both standardized comparison with existing literature and controlled experimentation across various problem characteristics.
+
+\subsubsection{Distance Metric}
+The distance metric used for calculating distances between cities is configurable as a parameter:
+
+\textbf{Euclidean Distance}: 
+\begin{equation}
+d(i,j) = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}
+\end{equation}
+
+\textbf{Manhattan Distance}: 
+\begin{equation}
+d(i,j) = |x_i - x_j| + |y_i - y_j|
+\end{equation}
+
+where $(x_i, y_i)$ and $(x_j, y_j)$ represent the coordinates of cities $i$ and $j$ respectively.
+
+\subsection{Performance Metrics}
+
+The following metrics were used to evaluate and compare algorithm performance:
+
+\begin{enumerate}
+    \item \textbf{Best Solution Quality}: The length of the shortest tour found across all runs for each algorithm.
+    
+    \item \textbf{Average Solution Quality}: The mean tour length across all independent runs, providing insight into algorithm consistency.
+    
+    \item \textbf{Standard Deviation}: The variability of solution quality across runs, indicating algorithm robustness.
+    
+    \item \textbf{Computational Time}: The average execution time required for each algorithm to complete.
+    
+    \item \textbf{Convergence Behavior}: The evolution of solution quality over generations/iterations, analyzed through convergence plots.
+\end{enumerate}
+
+Statistical significance of performance differences between algorithms was assessed using \textcolor{red}{[TO BE COMPLETED - e.g., paired t-tests with $\alpha = 0.05$ significance level]}.
 
 
 \section{Results and Analysis}

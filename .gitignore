@@ -215,6 +215,7 @@ __marimo__/
 *.bbl
 *.blg
 *.synctex.gz
+_minted*
 
 results/*
 !results/baseline
