@@ -4,7 +4,7 @@ from crossover.order_crossover import OrderCrossover
 from crossover.partially_mapped_crossover import PartiallyMappedCrossover
 from elite_selector.elite_selector import EliteSelector
 from load_csv import load_csv
-from solvers.callbacks.evolutionary_verbose_callback import EvolutionaryVerboseLevel1Callback, EvolutionaryVerboseLevel2Callback
+from solvers.callbacks.evolutionary_verbose_callback import EvolutionaryVerboseLevel1Callback, EvolutionaryVerboseLevel2Callback, EvolutionaryVerboseLevel3Callback
 from solvers.callbacks.metric_tracking import MetricTracker
 from solvers.evolutionary_solver import EvolutionarySolver
 from stop_criterions.time_stop_criterion import TimeStopCriterion
@@ -202,6 +202,8 @@ def parse_main(args=None):
         callbacks.append(EvolutionaryVerboseLevel1Callback())
         if parsed_args.verbose > 1:
             callbacks.append(EvolutionaryVerboseLevel2Callback())
+            if parsed_args.verbose > 2:
+                callbacks.append(EvolutionaryVerboseLevel3Callback())
     
     population_size = parsed_args.population_size
     cities_count = len(dataset)
