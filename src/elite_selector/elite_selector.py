@@ -1,4 +1,4 @@
-from src.cost_calculation.cost_calculation import CostCalculation
+from cost_calculation.cost_calculation import CostCalculation
 
 class EliteSelector():
     def __init__(self, cost_calculator: CostCalculation, elite_size: int):

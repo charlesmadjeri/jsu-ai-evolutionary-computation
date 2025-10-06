@@ -1,5 +1,5 @@
-from src.elite_selector.elite_selector import EliteSelector
-from src.cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
+from elite_selector.elite_selector import EliteSelector
+from cost_calculation.manhattan_cost_calculation import ManhattanCostCalculation
 
 from pytest import raises
 
