@@ -6,33 +6,41 @@ class AlwaysTrueCriterion(StopCriterion):
     def check(self, value):
         return True
 
-    def check_continue(self,value):
+    def check_continue(self, value):
         return True
 
     def start(self):
         pass
 
     def end(self):
-        pass  
+        pass
+
+    def restart(self):
+        pass
 
     def __str__(self):
         return "AlwaysTrueCriterion"
+
 
 class AlwaysFalseCriterion(StopCriterion):
     def check(self, value):
         return False
 
-    def check_continue(self,value):
+    def check_continue(self, value):
         return False
 
     def start(self):
         pass
 
     def end(self):
-        pass  
+        pass
+
+    def restart(self):
+        pass
 
     def __str__(self):
         return "AlwaysFalseCriterion"
+
 
 class TestCompositeStopCriterion(unittest.TestCase):
 
@@ -69,6 +77,7 @@ class TestCompositeStopCriterion(unittest.TestCase):
     def test_check_equals_check_continue(self):
         c = AndStopCriterion([AlwaysTrueCriterion()])
         self.assertEqual(c.check(0), c.check_continue(0))
+
 
 if __name__ == "__main__":
     unittest.main()
