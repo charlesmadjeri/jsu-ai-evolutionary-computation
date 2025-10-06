@@ -198,12 +198,12 @@ def parse_main(args=None):
         result["solver"] = GreedyFirst(cost_calculator=cost_calculator, minimise_cost=minimise_cost, callbacks=callbacks)
         return result
 
-    if parsed_args.verbose > 0:
+    if parsed_args.verbose >= 3:
+        callbacks.append(EvolutionaryVerboseLevel3Callback())
+    elif parsed_args.verbose >= 2:
+        callbacks.append(EvolutionaryVerboseLevel2Callback())
+    elif parsed_args.verbose >= 1:
         callbacks.append(EvolutionaryVerboseLevel1Callback())
-        if parsed_args.verbose > 1:
-            callbacks.append(EvolutionaryVerboseLevel2Callback())
-            if parsed_args.verbose > 2:
-                callbacks.append(EvolutionaryVerboseLevel3Callback())
     
     population_size = parsed_args.population_size
     cities_count = len(dataset)

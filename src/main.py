@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Jonkoping School of Engineering (JTH)
-Data Analysis Project
 
 Team Members:
 - Aikeya Ainiwaer
@@ -12,7 +11,6 @@ Team Members:
 
 AI course - Evolutionary computation assignment
 """
-
 import sys
 import os
 
