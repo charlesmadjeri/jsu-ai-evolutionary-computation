@@ -6,13 +6,13 @@ class AlwaysTrueCriterion(StopCriterion):
     def check(self, value):
         return True
 
+    def check_continue(self,value):
+        return True
+
     def start(self):
         pass
 
     def end(self):
-        pass
-
-    def restart(self):
         pass  
 
     def __str__(self):
@@ -22,13 +22,13 @@ class AlwaysFalseCriterion(StopCriterion):
     def check(self, value):
         return False
 
+    def check_continue(self,value):
+        return False
+
     def start(self):
         pass
 
     def end(self):
-        pass
-
-    def restart(self):
         pass  
 
     def __str__(self):
