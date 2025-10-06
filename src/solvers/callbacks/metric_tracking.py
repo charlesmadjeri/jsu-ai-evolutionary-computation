@@ -1,15 +1,30 @@
+from pprint import pprint
 from solvers.callbacks.greedy_first_callback import GreedyFirstCallback
 
 class MetricTracker(GreedyFirstCallback):
+    i = 1
+
     def __init__(self):
-        super().__init__(
-            on_start = lambda start_node: self.metric_tracker.log("start_node", start_node), 
-            on_iteration = lambda _: self.metric_tracker.log("greedy_step", 1), 
-            on_cost_calculation = lambda pt_a, pt_b, cost: self.metric_tracker.log("distance_calculations", 1),
-            on_end = lambda total_distance: self.metric_tracker.log("final_distance", total_distance)
-        )
+        super().__init__()
         self.metrics = {}
+
+    def on_start(self, dataset: list[tuple[float, float]], starting_node: int):
+        self.log("start_node", starting_node)
     
+    def on_iteration(self, processing_node: int):
+        self.log("greedy_step", 1)
+    
+    def on_cost_calculation(self, node_a: int, node_b: int, result: float):
+        self.log("distance_calculations", 1)
+    
+    def on_end(self, order: list[int], cost: float):
+        self.log("final_distance", cost)
+        print(f"\n--- Metrics for run {MetricTracker.i} ---")
+        metrics = self.summary()
+        pprint(metrics)
+        print("------------------------\n")
+        MetricTracker.i += 1
+
     def log(self, name, value):
         if name not in self.metrics:
             self.metrics[name] = []

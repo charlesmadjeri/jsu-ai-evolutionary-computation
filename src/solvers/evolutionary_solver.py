@@ -26,7 +26,6 @@ class EvolutionarySolver(Solver):
         self.elite_selector = elite_selector
         self.crossover = crossover
         self.callbacks = callbacks
-        # TODO once 'and' and 'or' logical operators are implemented, use them instead of lists
         self.or_criterions = stop_criterions if isinstance(stop_criterions, list) else []
         self.and_criterions = [IterationsStopCriterion(minimum_iterations)]
         self.verbose_level = verbose_level
@@ -91,7 +90,7 @@ class EvolutionarySolver(Solver):
             best_distance = elites[0][1]
 
             for callback in self.callbacks:
-                callback.on_new_elite(elites)
+                callback.on_new_elites(elites)
             
             if self.check_should_stop(best_distance):
                 break
@@ -102,5 +101,5 @@ class EvolutionarySolver(Solver):
                 callback.on_new_generation(generation)
 
         for callback in self.callbacks:
-            callback.on_end(elites[0])
+            callback.on_end(order=elites[0][0], cost=elites[0][1])
         return elites[0]

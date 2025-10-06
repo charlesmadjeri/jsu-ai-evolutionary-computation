@@ -25,13 +25,13 @@ class GreedyFirst(Solver):
         visited = [remaining.pop(0)]
         
         for callable in self.callbacks:
-            callable.on_start(visited[0])
+            callable.on_start(dataset=coordinates, starting_node=visited[0])
         
         iteration_i = 0
         while remaining:
             iteration_i += 1
             for callable in self.callbacks:
-                callable.on_iteration(iteration_i)
+                callable.on_iteration(processing_node=iteration_i)
             last = visited[-1]
             best_i = 0
             best_d = self.cost_calculator.calculate(
@@ -39,7 +39,7 @@ class GreedyFirst(Solver):
                 coordinates[remaining[0]]
             )
             for callable in self.callbacks:
-                callable.on_cost_calculation(coordinates[last], coordinates[remaining[0]], best_d)
+                callable.on_cost_calculation(last, remaining[0], best_d)
             
             for i in range(1, len(remaining)):
                 d = self.cost_calculator.calculate(
@@ -47,7 +47,7 @@ class GreedyFirst(Solver):
                     coordinates[remaining[i]]
                 )
                 for callable in self.callbacks:
-                    callable.on_cost_calculation(coordinates[last], coordinates[remaining[i]], d)
+                    callable.on_cost_calculation(last, remaining[i], d)
                 
                 if self.check_is_better_cost(d, best_d):
                     best_i = i
@@ -64,5 +64,5 @@ class GreedyFirst(Solver):
         )
         
         for callable in self.callbacks:
-            callable.on_end(total_distance)
+            callable.on_end(order=visited, cost=total_distance)
         return visited, total_distance
