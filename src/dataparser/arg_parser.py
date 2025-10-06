@@ -4,6 +4,8 @@ from crossover.order_crossover import OrderCrossover
 from crossover.partially_mapped_crossover import PartiallyMappedCrossover
 from elite_selector.elite_selector import EliteSelector
 from load_csv import load_csv
+from solvers.callbacks.evolutionary_verbose_callback import EvolutionaryVerboseLevel1Callback, EvolutionaryVerboseLevel2Callback, EvolutionaryVerboseLevel3Callback
+from solvers.callbacks.metric_tracking import MetricTracker
 from solvers.evolutionary_solver import EvolutionarySolver
 from stop_criterions.time_stop_criterion import TimeStopCriterion
 from stop_criterions.improvement_stop_criterion import ImprovementStopCriterion
@@ -188,11 +190,21 @@ def parse_main(args=None):
     # TODO: removed until evolutionary computation supports max price
     # minimise_cost = parsed_args.optimise_cost == 'min'
 
+    callbacks = []
     if parsed_args.greedy_first:
         print("Using greedy first algorithm instead of evolutionary computation. WARNING: This will override most of the other arguments and run greedy first instead of evolutionary computation.")
-        result["solver"] = GreedyFirst(cost_calculator=cost_calculator, minimise_cost=minimise_cost)
+        if parsed_args.verbose > 0:
+            callbacks.append(MetricTracker())
+        result["solver"] = GreedyFirst(cost_calculator=cost_calculator, minimise_cost=minimise_cost, callbacks=callbacks)
         return result
 
+    if parsed_args.verbose > 0:
+        callbacks.append(EvolutionaryVerboseLevel1Callback())
+        if parsed_args.verbose > 1:
+            callbacks.append(EvolutionaryVerboseLevel2Callback())
+            if parsed_args.verbose > 2:
+                callbacks.append(EvolutionaryVerboseLevel3Callback())
+    
     population_size = parsed_args.population_size
     cities_count = len(dataset)
     if isinstance(population_size, float):
@@ -238,6 +250,6 @@ def parse_main(args=None):
         crossover=crossover, 
         stop_criterions=stoppage_criteria, 
         population_size=population_size,
-        verbose_level=result["verbose"]
+        callbacks=callbacks
     )
     return result
