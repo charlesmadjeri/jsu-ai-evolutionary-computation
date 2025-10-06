@@ -218,3 +218,4 @@ __marimo__/
 
 results/*
 !results/baseline
+!results/generated_datasets
