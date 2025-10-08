@@ -21,8 +21,6 @@ if __name__ == "__main__":
     if not isinstance(args.whitelist, list):
         args.whitelist = [args.whitelist]
 
-    print(args.whitelist)
-
     BASE_DIR = args.dir
     EXPORT_DIR = join(BASE_DIR, "export")
     FILE_LENGTHS_FILE = join(EXPORT_DIR, "_file_lengths.csv")
@@ -34,10 +32,10 @@ if __name__ == "__main__":
     for file in listdir(BASE_DIR):
         if not file.endswith(".tsp"):
             continue
-        if args.whitelist and file[:-4] not in args.whitelist:
+        stripped_filename = file.replace(".tsp", "")
+        if args.whitelist and stripped_filename not in args.whitelist:
             continue
         data = load_tsp_data(join(BASE_DIR, file))
-        stripped_filename = file.replace(".tsp", "")
         with open(join(EXPORT_DIR, stripped_filename + ".csv"), "w") as f:
             f.write(f"x,y\n")
             for x, y in data:
@@ -53,6 +51,7 @@ if __name__ == "__main__":
                 continue
             elapsed = time() - elapsed
             gf_str = f",{cost},{elapsed},\"{order}\""
+            print(f"{stripped_filename} done in {elapsed:.6f}s with cost {cost:.2f}")
         length = len(data)
         with open(FILE_LENGTHS_FILE, "a") as f:
             f.write(f"{stripped_filename},{length}{gf_str}\n")
