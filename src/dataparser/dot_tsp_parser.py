@@ -18,9 +18,16 @@ def load_tsp_data(file_path: str) -> list[tuple[float, float]]:
                 if "EOF" in line or re.sub(" +", " ", line) == "\n": # in case no EOF is declared, ex: usa13509
                     break
                 if node_coord_section == True:
-                    nodes.append((re.sub(" +", " ", line).strip().split(" ")[1], re.sub(" +", " ", line).strip().split(" ")[2]))
-                if "NODE_COORD_SECTION" in line:
-                    node_coord_section = True
+                    split_line = [re.sub(" +", " ", line).strip().split(" ")[1], re.sub(" +", " ", line).strip().split(" ")[2]]
+                    for idx_split in range(2):
+                        if isinstance(split_line[idx_split], str):
+                            try:
+                                split_line[idx_split] = float(split_line[idx_split])
+                            except ValueError:
+                                split_line[idx_split] = int(split_line[idx_split])
+                    nodes.append(tuple(split_line))
+                else:
+                    node_coord_section = "NODE_COORD_SECTION" in line
             except IndexError:
                 break
     if nodes == []:
