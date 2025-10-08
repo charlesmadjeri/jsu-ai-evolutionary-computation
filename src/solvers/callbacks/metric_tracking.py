@@ -1,4 +1,5 @@
 from pprint import pprint
+from time import time
 from solvers.callbacks.greedy_first_callback import GreedyFirstCallback
 
 class MetricTracker(GreedyFirstCallback):
@@ -11,6 +12,7 @@ class MetricTracker(GreedyFirstCallback):
         MetricTracker.i += 1
 
     def on_start(self, solver, dataset: list[tuple[float, float]], starting_node: int):
+        self.start_time = time.time()
         self.log("start_node", starting_node)
     
     def on_iteration(self, processing_node: int):
@@ -20,9 +22,11 @@ class MetricTracker(GreedyFirstCallback):
         self.log("distance_calculations", 1)
     
     def on_end(self, order: list[int], cost: float):
+        self.elapsed_time = time.time() - self.start_time
         self.log("final_distance", cost)
         print(f"\n--- Metrics for run {self.local_i} ---")
         metrics = self.summary()
+        print(f"Execution time: {self.elapsed_time:.6f}s")
         pprint(metrics)
         print("------------------------\n")
 
