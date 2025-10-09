@@ -16,7 +16,11 @@
 }
 
 % ---------------------- Report details --------------------- %
+<<<<<<< HEAD
 \newcommand{\docauthor}{Andrej Kutny, Charles Madjeri, Samrat Debnath \\ Vladimir Giustacchini, Aikeya Ainiwaer}
+=======
+\newcommand{\docauthor}{Andrej Kutny, Charles Madjeri, Samrat Debnath, \\ Vladimir Giustacchini, Aikeya Ainiwaer}
+>>>>>>> 4ddef7f2c7ce329774f835549cc38ae2133ce506
 \newcommand{\courseyear}{2025}
 \newcommand{\coursename}{TARI29 Artificial Intelligence}
 \newcommand{\coursecredits}{7.5 credits}
@@ -204,6 +208,7 @@ where $x_i$ is the $i$-th gene (i.e., decision variable) in the solution and $d$
 \section{Experimental part}
 \label{sec:experimentation}
 
+<<<<<<< HEAD
 {\color{red}
 This section describes the setup of experiments \cite{zobel2014experimentation}:
 
@@ -214,11 +219,14 @@ This section describes the setup of experiments \cite{zobel2014experimentation}:
 \end{itemize}
 }
 
+=======
+>>>>>>> 4ddef7f2c7ce329774f835549cc38ae2133ce506
 This section describes the setup of experiments conducted to evaluate and compare the performance of the greedy best-first search baseline with two evolutionary algorithm variants employing different crossover operators.
 
 \subsection{Hardware and Software Specifications}
 
 \subsubsection{Hardware Configuration}
+<<<<<<< HEAD
 The experiments were conducted on the following hardware configurations:
 
 \textbf{Configuration 1:}
@@ -234,17 +242,36 @@ The algorithms were implemented using the following software tools:
 \begin{itemize}
     \item \textbf{Programming Language}: Python 3.12
     \item \textbf{Libraries and Frameworks}: 
+=======
+The experiments were conducted on the following hardware configuration:
+\begin{itemize}
+    \item Processor: AMD Ryzen 7 7840HS (16 cores) @ 3.8GHz
+    \item Memory: 48 GB RAM
+    \item Operating System: Linux Ubuntu 24.04
+\end{itemize}
+
+\subsubsection{Software Environment}
+The algorithms were implemented using the following software tools:
+\begin{itemize}
+    \item Programming Language: Python 3.12
+    \item Libraries and Frameworks: 
+>>>>>>> 4ddef7f2c7ce329774f835549cc38ae2133ce506
     \begin{itemize}
         \item NumPy (numerical computations and array operations)
         \item Matplotlib (data visualization and convergence plots)
     \end{itemize}
+<<<<<<< HEAD
     \item \textbf{Development Environment}: Visual Studio Code
+=======
+    \item Development Environment: Visual Studio Code
+>>>>>>> 4ddef7f2c7ce329774f835549cc38ae2133ce506
 \end{itemize}
 
 \subsection{Experimental Procedure}
 
 \subsubsection{Algorithm Configuration}
 
+<<<<<<< HEAD
 \textbf{Design Choices:}
 The evolutionary algorithm employs the following systematic design decisions:
 \begin{itemize}
@@ -273,11 +300,40 @@ Each algorithm was executed following this protocol:
     \end{itemize}
     The specific stopping criterion (or combination of criteria) used depends on the experimental configuration.
     \item \textbf{Performance Recording}: For each run, the best solution quality, average solution quality, and computational time were recorded.
+=======
+The evolutionary algorithm employs the following systematic design decisions:
+
+\begin{itemize}
+  \item{Selection Method}: Elite selection (fixed design choice ensuring the best individuals are preserved across generations)
+  \item{Configurable Parameters}: The following parameters were varied during experimentation:
+  \begin{itemize}
+    \item{Population Size}
+    \item{Stopping Criteria}
+    \item{Crossover Rate}
+    \item{Elite Rate}
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Execution Protocol}
+The experiments executed the algorithm following this protocol:
+\begin{enumerate}
+    \item \textbf{Initialization}: For evolutionary algorithms, the initial population was generated using random permutations of city sequences.  
+    \item \textbf{Independent Runs}: Each algorithm configuration was run at least 25 times with different random seeds to account for stochastic variation and ensure statistical validity.
+    \item \textbf{Termination Criteria}: The algorithm employ multiple configurable stopping criteria:
+    \begin{itemize}
+        \item \textbf{Iteration-based}: Maximum number of generations/iterations
+        \item \textbf{Time-based}: Maximum execution time limit
+        \item \textbf{Improvement-based}: Termination when improvement becomes less than a specified threshold
+    \end{itemize}
+    The specific stopping criteria (or combination of criteria) has been fine tuned during the parameter search process.
+    \item \textbf{Results exporting}: The results were exported in a CSV file for each parameter set.
+>>>>>>> 4ddef7f2c7ce329774f835549cc38ae2133ce506
 \end{enumerate}
 
 \subsection{Evaluation Data}
 
 \subsubsection{Problem Instances}
+<<<<<<< HEAD
 The algorithms were evaluated on TSP instances of varying sizes to assess scalability and performance:
 \begin{itemize}
     \item \textbf{Problem Sizes}: \textcolor{red}{[TO BE COMPLETED - e.g., 20, 50, 100, and 200 cities]}
@@ -292,6 +348,20 @@ The experimental evaluation employs two types of datasets:
 \textbf{Self-Generated Datasets}: Randomly generated TSP instances \textcolor{red}{[TO BE COMPLETED - specify generation method, e.g., cities with coordinates uniformly distributed in a defined range, number of instances generated]}.
 
 This combination of benchmark and synthetic datasets allows for both standardized comparison with existing literature and controlled experimentation across various problem characteristics.
+=======
+The algorithm were evaluated on TSP instances of varying sizes to assess scalability and performance:
+\begin{itemize}
+    \item \textbf{Problem Sizes}: 76, 136, and 280 cities (EIL76, PR136, A280 datasets)
+    \item \textbf{Number of Instances}: 3 benchmark instances from TSPLIB
+\end{itemize}
+
+\subsubsection{Data Generation}
+The experimental evaluation employs benchmark datasets from TSPLIB:
+
+\textbf{Benchmark Datasets}: Standard TSP instances (EIL76, PR136, A280) from TSPLIB. These benchmark problems are parsed and stored as arrays of tuples containing city coordinates $(x, y)$.
+
+This standardized approach allows for direct comparison with existing literature and ensures reproducibility of results across different implementations.
+>>>>>>> 4ddef7f2c7ce329774f835549cc38ae2133ce506
 
 \subsubsection{Distance Metric}
 The distance metric used for calculating distances between cities is configurable as a parameter:
@@ -308,6 +378,7 @@ d(i,j) = |x_i - x_j| + |y_i - y_j|
 
 where $(x_i, y_i)$ and $(x_j, y_j)$ represent the coordinates of cities $i$ and $j$ respectively.
 
+<<<<<<< HEAD
 \subsection{Performance Metrics}
 
 The following metrics were used to evaluate and compare algorithm performance:
@@ -325,10 +396,36 @@ The following metrics were used to evaluate and compare algorithm performance:
 \end{enumerate}
 
 Statistical significance of performance differences between algorithms was assessed using \textcolor{red}{[TO BE COMPLETED - e.g., paired t-tests with $\alpha = 0.05$ significance level]}.
+=======
+\subsubsection{Performance Metrics}
+The following metrics were used to evaluate and compare algorithm performance:
+
+\begin{enumerate}
+    \item \textbf{Best Cost}: The minimum tour length found across all runs for each algorithm configuration
+    
+    \item \textbf{Average Cost}: The mean tour length across all independent runs, providing insight into algorithm consistency
+    
+    \item \textbf{Standard Deviation}: The variability of solution quality across runs, indicating algorithm robustness
+    
+    \item \textbf{Average Execution Time}: The mean computational time required for each algorithm to complete
+        
+    \item \textbf{Baseline Gap (Best)}: The percentage difference between the best solution found and the baseline algorithm's best solution, calculated as:
+    \begin{equation}
+    \frac{EA_{best} - Baseline_{best}}{Baseline_{best}} \times 100\%
+    \end{equation}
+    
+    \item \textbf{Baseline Gap (Average)}: The percentage difference between the average solution quality and the baseline algorithm's average solution quality, calculated as:
+    \begin{equation}
+    \frac{EA_{avg} - Baseline_{avg}}{Baseline_{avg}} \times 100\%
+    \end{equation}
+\end{enumerate}
+
+>>>>>>> 4ddef7f2c7ce329774f835549cc38ae2133ce506
 
 \section{Results and Analysis}
 \label{sec:results-analysis}
 
+<<<<<<< HEAD
 \documentclass{article}
 \usepackage{pgfplots}
 \usepackage{filecontents}
