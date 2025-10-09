@@ -1,6 +1,6 @@
 % TARI29_Assignment_report_template.tex
 % This is a template for the assignment reports
-% TARI29 Artificial Intelligence, 7.5 credits, Winter 2024
+% TARI29 Artificial Intelligence, 7.5 credits, Autumn 2025
 % Original version by:  Vladimir Tarasov, 2024
 % Revised by:           Alexandros Tzanetos, 2024 
 
@@ -228,13 +228,6 @@ The experiments were conducted on the following hardware configurations:
     \item \textbf{Operating System}: Linux Ubuntu 24.04
 \end{itemize}
 
-\textbf{Configuration 2:}
-\begin{itemize}
-    \item \textbf{Processor}: Apple M2 Pro (12 cores)
-    \item \textbf{Memory}: 16 GB LPDDR5
-    \item \textbf{Operating System}: macOS Tahoe 26.0.1
-\end{itemize}
-
 \subsubsection{Software Environment}
 The algorithms were implemented using the following software tools:
 \begin{itemize}
@@ -332,186 +325,18 @@ The following metrics were used to evaluate and compare algorithm performance:
 
 Statistical significance of performance differences between algorithms was assessed using \textcolor{red}{[TO BE COMPLETED - e.g., paired t-tests with $\alpha = 0.05$ significance level]}.
 
-
 \section{Results and Analysis}
 \label{sec:results-analysis}
 
-\textcolor{red}{This section should present the obtained results and provide an insightful analysis of them. You can present the results using graphs, tables, or any other visualization method suits your purpose. Do not forget to include proper captions \cite{zobel2014graphs} in any of these illustration methods you use. You do not need to provide any execution details as they are already presented in Sec.~\ref{sec:experimentation}.}
+\subsection[Experiment 1]{Tuning population size / generation number ratio over cost}
 
-\textcolor{red}{A good practise would be to compare your algorithm with a simpler approach, such as (a) a naive method, (b) a Hill Climbing approach, or (c) a simple evolutionary algorithm. In the third case, you can use the simpler version of the algorithm you developed, i.e., the original algorithm without your modifications. In that case, you should briefly describe the comparing method(s) in Sec.~\ref{sec:experimentation}. Alternatively, you can use some reference results derived from the repositories you found some benchmark instances.}
+This experiment was conducted to observe the effect of the population size / generation number ratio tuning on the cost. The results are shown in the following plots.
 
-\textcolor{red}{To display tables, the \texttt{booktabs} package might be useful. For example, Table~\ref{tab:results_example} shows how you should increase the  size of $n$, when running your code. You can advice \cite{zobel2014graphs} to see a few examples of proper tables.}
-
-\begin{table}[ht]
-\centering
-\caption{Example of comparison the developed algorithm's results with the best ones from a repository.}
-\label{tab:results_example}
-	\begin{tabular}{lrrr}
-	\toprule
-	\textbf{Instance} & \textbf{Optimum (Repository xyz)} & \textbf{EA} & \textbf{time (s)}\\
-	\midrule
-	st70       &  678.597      & 677.109	& 0.67\\
-	ei176      &  545.387      & 544.369	& 1.16\\
-	kroA100    &  21285.443    & 21285.443	& 1.69\\
-	rd100      &  7910.396     & 7910.396	& 2.14\\
-	Pr136      &  96772        & 96770.924	& 7.11\\
-	Pr144      &  58537        & 58535.221	& 7.97\\
-	a280       &  2856.769     & 2856.769	& 33.47\\
-	\bottomrule
-	\end{tabular}
-\end{table}
-
-\textcolor{red}{You can use different illustration methods to present different aspects of your analysis. Figure~\ref{fig:plot_example} gives an example using the \href{https://www.overleaf.com/learn/latex/Pgfplots_package}{\texttt{pgfplots}} package.}
-
-\begin{figure}[ht]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    % title={Example of convergence analysis},
-    xlabel={Generation},
-    ylabel={Fitness function value},
-    xmin=0, xmax=20,
-    ymin=290, ymax=450,
-    xtick={0,5,10,15,20},
-    ytick={290,300,350,400,450},
-    legend pos=north east,
-    ymajorgrids=true,
-    grid style=dashed,
-]
-
-\addplot[
-    color=blue,
-    mark=square,
-    ]
-    coordinates {
-    (0,420)(4,411)(7,387)(10,382)(14,364)(18,360)(20,358)
-    };
-    \addlegendentry{EA1}
-
-\addplot[
-    color=red,
-    mark=triangle,
-    ]
-    coordinates {
-    (0,422)(4,373)(9,362)(12,312)(18,311)(20,309)
-    };
-    \addlegendentry{EA2}
-
-\addplot[
-    color=violet,
-    mark=diamond,
-    ]
-    coordinates {
-    (0,448)(6,401)(8,349)(11,325)(14,299)(20,298)
-    };
-    \addlegendentry{EA3}
-  
-\end{axis}
-\end{tikzpicture}
-\caption{Example of convergence analysis.}
-\label{fig:plot_example}
-\end{figure}
-
-% PLOTS FOR PR136, A280, EIL76
+\subsubsection{Results for EIL76 dataset:}
 
 \begin{tikzpicture}
 \begin{axis}[
-  width=\textwidth, height=9cm,
-  xlabel={Generation Nr / Population Size},
-  ylabel={Cost},
-  x tick label style={rotate=60,anchor=east},
-  legend pos=north west,
-  enlarge x limits=0.02,
-  scaled x ticks=false,
-  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
-]
-
-% average point (red circle) + whisker down to min
-\addplot+[
-  only marks,
-  mark=o,
-  color=red,
-  thick,
-  error bars/.cd,
-    y dir=minus,   % draw whisker downward only
-    y explicit,    % use given expression for its size
-]
-table[
-  x={gen_pop_ratio},
-  y=average_cost,
-  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
-  col sep=comma
-]{tuning_ratio_over_cost_csv_files/pr136.csv};
-\addlegendentry{average}
-
-% bottom markers (min)
-\addplot+[
-  only marks,
-  mark=square*,
-  color=red,
-  thick,
-]
-table[
-  x={gen_pop_ratio},
-  y=best_cost,
-  col sep=comma
-]{tuning_ratio_over_cost_csv_files/pr136.csv};
-\addlegendentry{min}
-
-\end{axis}
-\end{tikzpicture}
-
-\begin{tikzpicture}
-\begin{axis}[
-  width=\textwidth, height=9cm,
-  xlabel={Generation Nr / Population Size},
-  ylabel={Cost},
-  x tick label style={rotate=60,anchor=east},
-  legend pos=north west,
-  enlarge x limits=0.02,
-  scaled x ticks=false,
-  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
-]
-
-% average point (red circle) + whisker down to min
-\addplot+[
-  only marks,
-  mark=o,
-  color=red,
-  thick,
-  error bars/.cd,
-    y dir=minus,   % draw whisker downward only
-    y explicit,    % use given expression for its size
-]
-table[
-  x={gen_pop_ratio},
-  y=average_cost,
-  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
-  col sep=comma
-]{tuning_ratio_over_cost_csv_files/a280.csv};
-\addlegendentry{average}
-
-% bottom markers (min)
-\addplot+[
-  only marks,
-  mark=square*,
-  color=red,
-  thick,
-]
-table[
-  x={gen_pop_ratio},
-  y=best_cost,
-  col sep=comma
-]{tuning_ratio_over_cost_csv_files/a280.csv};
-\addlegendentry{min}
-
-\end{axis}
-\end{tikzpicture}
-
-
-\begin{tikzpicture}
-\begin{axis}[
-  width=\textwidth, height=9cm,
+  width=0.95\textwidth, height=9cm,
   xlabel={Generation Nr / Population Size},
   ylabel={Cost},
   x tick label style={rotate=60,anchor=east},
@@ -556,7 +381,114 @@ table[
 \end{axis}
 \end{tikzpicture}
 
-\lipsum[4]
+Here we can observe blablabla
+
+\subsubsection{Results for PR136 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/pr136.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/pr136.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
+Here we can observe blablabla
+
+\subsubsection{Results for A280 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/a280.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/a280.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
+Here we can observe blablabla
+
+\subsubsection{Experiment results analysis}
+
+During this experiment, we observed that the cost decreases as the population size / generation number ratio increases. This is expected because a larger population size allows for more exploration of the search space, which leads to better solutions.
+
 
 \section{Conclusions}
 \label{sec:conclusions}
