@@ -1,0 +1,939 @@
+% TARI29_Assignment_report.tex
+% This is a template for the assignment reports
+% TARI29 Artificial Intelligence, 7.5 credits, Autumn 2025
+% Original version by:  Vladimir Tarasov, 2024
+% Revised by:           Alexandros Tzanetos, 2024 
+
+\documentclass{scrartcl}
+
+\KOMAoptions{
+    parskip=half,  % full, off
+    fontsize=12pt, % base font size (10pt default)
+    % headings=big,% small/normal/big headings (normal is default), 
+    % paper=a5,    % paper format (a4 default) 
+    pagesize=auto  % Use paper format for PDF too
+}
+
+% ---------------------- Report details --------------------- %
+\newcommand{\docauthor}{Andrej Kutny, Charles Madjeri, Samrat Debnath, \\ Vladimir Giustacchini, Aikeya Ainiwaer}
+\newcommand{\courseyear}{2025}
+\newcommand{\coursename}{TARI29 Artificial Intelligence}
+\newcommand{\coursecredits}{7.5 credits}
+\newcommand{\fullcoursename}{\coursename, \coursecredits}
+\newcommand{\termname}{Autumn \courseyear}
+\newcommand{\groupnumber}{4}
+\newcommand{\reportname}{Group \groupnumber\ Assignment Report}
+\newcommand{\assignmentname}{Evolutionary Computation Assignment}
+% ------------------ End of report details ------------------ %
+
+
+
+% ---------- Setting up properties of the PDF file ---------- %
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    allcolors=blue,
+    pdftitle={\reportname},
+    pdfauthor={\docauthor},
+    pdfsubject={\coursename, \termname}
+	% pdfpagemode=FullScreen,
+	% pdfpagemode= UseOutlines % the default if present
+}
+% ------------ End of properties of the PDF file ------------ %
+
+
+
+% ----------- Setting up the headers and footers ------------ %
+\usepackage{scrlayer-scrpage}
+\pagestyle{scrheadings}
+\KOMAoptions{% 
+    headsepline,% line below the header
+    plainheadsepline,% also on scrplain
+}
+\clearpairofpagestyles % Erase all current configurations (updated from deprecated \clearscrheadfoot)
+% inner part of the header [titel_page]{other_pages}
+\ihead[\coursename, \courseyear]{\coursename, \courseyear}
+% outer part of the header [titel_page]{other_pages}
+\ohead{\assignmentname}
+% center part of the footer [titel_page]{other_pages}
+\cfoot[\textup{Page \pagemark}]{\textup{Page \pagemark}}
+% ------------- End of the headers and footers -------------- %
+
+
+
+% ---------------- Setting up the title page ---------------- %
+\title{\reportname}
+\subtitle{An Evolutionary Algorithm for the Traveling Salesman Problem}
+\author{\docauthor}
+\date{\today}
+% ------------------ End of the title page ------------------ %
+
+
+
+% --------------- Packages and custom commands -------------- %
+% Specify the input encoding of the source file as UTF8 
+\usepackage[utf8]{inputenc}
+% The T1 font encoding is an 8-bit encoding and fully supports words containing accented characters
+\usepackage[T1]{fontenc}
+% Load Latin modern fonts in outline format
+\usepackage{lmodern}
+% Load better typewriter font
+\usepackage{inconsolata}
+% For better hyphenation patterns
+\usepackage[english]{babel}
+% For improved micro-typography
+\usepackage{microtype}
+% Switch off extra space after a sentence
+\frenchspacing
+% To be able to iclude pictures
+\usepackage{graphicx}
+\usepackage{zref-totpages} % To get the total number of pages
+\usepackage{lastpage} % For LastPage reference
+\usepackage{mathtools,amsmath} % for advanced math formulas
+ % To highlight source code
+\usepackage{minted}
+% Default options for all minted environments
+\setminted{
+           style=default, % for minted envronment
+           autogobble, % automatically remove all common leading whitespace
+           xleftmargin=10pt, % indentation to add (on the left) before the listing
+           numbersep=6pt, % gap between numbers and start of line
+           linenos, % enables line numbers
+           mathescape % enables the usual math mode inside comments
+}
+\setmintedinline[c]{style=default} % for minted inlines
+% Flexible handling of verbatim text
+\usepackage{fancyvrb}
+% For well-spaced lines and guidelines in tables
+\usepackage{booktabs}
+% To typeset algorithms or pseudocode in LaTeX 
+\usepackage{algorithm}
+\usepackage{algorithmic}
+% For plots and graphs
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.18}
+
+% To generate placeholder text - can be deleted when you have written real text
+\usepackage{lipsum}
+% ----------- End of packages and custom commands ----------- %
+
+
+\begin{document}
+
+\maketitle
+
+% % It can be commented out if you do not want the table of contents
+% \tableofcontents 
+
+
+\section{Introduction}
+This project is part of our exploration into evolutionary computation; a field focused on solving complex optimization problems using biologically inspired algorithms. In our Non-traditional Search lecture, where Local Search, Hill Climbing, Simulated Annealing were also discussed, the current assignment on Evolutionary Computation was introduced. 
+Our goal is to design, implement, and evaluate an evolutionary algorithm tailored to a problem of our choice, gaining hands-on experience with both the methodology and its practical challenges.
+Rather than simply applying a predefined solution, we are expected to make thoughtful design decisions—selecting a scalable problem, tuning parameters, and pushing our system to its limits—to demonstrate it as a good first step in evolutionary computation practice and their effectiveness.
+
+
+\section{Traveling Salesman Problem}
+
+Given a set of cities \(C=\{c_1,c_2,\dots,c_n\}\) with coordinates, and a distance function \(d(\cdot,\cdot)\), the objective is to find a permutation \(\pi\) of the city indices that minimizes the total path length for the open (path) TSP:
+\[
+L(\pi)=\sum_{k=1}^{n-1} d\bigl(\pi(k),\pi(k+1)\bigr).
+\]
+
+We use the Manhattan distance between two cities \(c_i=(x_i,y_i)\) and \(c_j=(x_j,y_j)\):
+\[
+d_{\text{Manhattan}}(c_i,c_j)=|x_i-x_j|+|y_i-y_j|.
+\]
+
+
+Three recent studies demonstrate the effectiveness of evolutionary algorithms in tackling the TSP. Bossek and Neumann introduce a Quality Diversity (QD) approach that evolves diverse TSP instances using a Map-Elites framework, enabling better algorithm selection by exploring the feature space and optimizing solver performance [1]. Saini et al. propose a hybrid quantum-classical evolutionary algorithm using Sort Gray Binary Encoding (SGBET) to ensure valid TSP tours and leverage quantum superposition for enhanced scalability on NISQ devices [3]. Meanwhile, da Silva Junior et al. conduct a comparative study of high-level hybridizations between eight metaheuristics and heuristics like k-OPT, SISR, and segment uncrossing, showing that combining evolutionary strategies with problem-specific heuristics significantly improves solution quality across various TSP instances [2]. 
+These inspired hybrid approaches of the academic papers reinforced our choice for a hybrid of ‘exploration and exploitation’ in Order Crossover(OX) and Partially Mapped Crossover(PMX) as compared to say Cycle Crossover(CX) that leans towards exploitation and can be destructive to adjacency relationships.
+
+In the context of the TSP, maintaining the exact order or position of cities is less critical than preserving high-quality partial routes. The effectiveness of genetic algorithms in this domain largely stems from their ability to retain and recombine these beneficial substructures from parent solutions. Order Crossover (OX) is particularly well-suited for this task, as it maintains essential adjacency relationships while still enabling genetic diversity through recombination. This characteristic explains its consistent superiority over other crossover operators in TSP applications, regardless of whether the explicit sequence of cities is considered important. Thus motivating our particular implementation.
+
+
+\section{Evolutionary Solver Algorithm}
+To solve the Open Traveling Salesman Problem (Path TSP), we developed a tailored evolutionary algorithm. 
+\subsection{Components of the Evolutionary Algorithm:}
+\subsubsection{Representation}
+Each individual in the population is encoded as a chromosome representing a permutation of city indices. This ensures that every candidate solution corresponds to a valid path visiting all cities exactly once.
+
+\subsubsection{Initialization}
+The initial population is generated randomly, with each individual representing a unique tour. The population size is a configurable parameter and was varied during experimentation to study its impact on performance.
+\subsubsection{Evaluation}
+Individuals are evaluated using a fitness function based on the total path distance. Since the problem is formulated as an Open TSP, the fitness is calculated as the sum of distances between consecutive cities in the tour, without including the return to the starting city. The goal is to minimize this path length.
+
+\subsubsection{Selection}
+We employed elite selection to retain the best-performing individuals across generations. A configurable elite rate determines the proportion of top individuals preserved directly into the next generation, ensuring that high-quality solutions are not lost. The displaced individuals are replaced by offspring generated by either OX or PMX from randomly selected parents from pool of elites and so on. 
+
+\subsubsection{Crossover operators}
+Two crossover operators were used to generate offspring:
+\begin{itemize}
+  \item \textbf{Order Crossover (OX)}: This operator maintains the relative order and position of cities from the parents, helping preserve beneficial subsequences.
+  \item \textbf{Partially Mapped Crossover (PMX)}: PMX retains absolute positions and mappings between parent chromosomes, which is useful for maintaining structural consistency.
+\end{itemize}
+Both operators were adapted to ensure that offspring remain valid permutations suitable for the Open TSP.
+
+\subsubsection{Fitness function}
+The fitness function is defined as the total path distance of the tour, excluding the return leg. This aligns with the Open TSP objective of minimizing the distance traveled from the first to the last city.
+For an individual tour \(\pi\), the objective used is the path length
+\[
+L(\pi)=\sum_{k=1}^{n-1} d\bigl(\pi(k),\pi(k+1)\bigr),
+\]
+and selection favors smaller \(L(\pi)\).
+
+\subsubsection{Replacement strategy}
+The new generation replaces the old one, with elite individuals carried forward. This strategy balances exploration and exploitation, allowing the algorithm to refine solutions while preserving strong candidates.
+\subsubsection{Stopping criteria}
+The algorithm stops when any of the following conditions are met:
+\begin{itemize}
+  \item Time-based: Stops after a predefined number of seconds.
+  \item Iteration-based: Terminates after a fixed number of generations.
+  \item Improvement-based: Ends if solution improvement rate is smaller than defined threshold
+\end{itemize}
+These stopping conditions were varied during experimentation to assess their influence on convergence and solution quality.
+
+\subsubsection{Comparative Baseline}
+To benchmark the evolutionary algorithm, we used a Greedy First Solver as a baseline. This heuristic constructs a tour by always selecting the nearest unvisited city, providing a fast but often suboptimal solution for comparison.
+
+\begin{algorithm}[H]
+\caption{Evolutionary Algorithm for Open TSP (path length as fitness)}
+\begin{algorithmic}[0]
+\REQUIRE Cities \(C=\{c_1,\dots,c_n\}\) with coordinates
+\REQUIRE Population size \(N\), Elite proportion \(\rho\) (so \(E=\lceil \rho N\rceil\))
+\REQUIRE Crossover rate \(p_c\)
+\REQUIRE Crossover operator choice: OX or PMX
+\REQUIRE Stopping criteria: time \(T\), generations \(G\), stagnation \(I\)
+\ENSURE Best open tour \(\pi_{\text{best}}\)
+\STATE Initialize population \(P_0\) with \(N\) random permutations (open tours)
+\STATE Define fitness (cost) \(L(\pi)=\sum_{k=1}^{n-1} d(\pi(k),\pi(k+1))\) using Manhattan distance
+\STATE Evaluate \(L(\pi)\) for all \(\pi\in P_0\)
+\STATE \(\pi_{\text{best}}\gets\) individual in \(P_0\) with minimum \(L(\pi)\)
+\STATE \(g\gets 0\), stagnation counter \(s\gets 0\)
+\STATE Start timer
+\WHILE{stopping criteria not met}
+  \STATE Sort \(P_g\) by ascending \(L(\pi)\)
+  \STATE Select top \(E\) individuals as \textbf{elites}: \(\mathcal{E} \gets \{\pi_1,\dots,\pi_E\}\)
+  \STATE Remove non-elites: \(R \gets P_g \setminus \mathcal{E}\)
+  \STATE \textbf{Fill} the population back to size \(N\) by generating offspring:
+  \STATE \quad Let \(\text{num\_to\_create} \gets N - E\)
+  \FOR{\(i=1\) to \(\text{num\_to\_create}\)}
+    \STATE With probability \(p_c\) do:
+      \STATE \quad Select two parents uniformly at random from \(\mathcal{E}\): \(p_a,p_b\)
+      \IF{OX chosen} 
+        \STATE \quad $offspring \gets \mathrm{OX}(p_a,p_b)$
+      \ELSIF{PMX chosen}
+        \STATE \quad $offspring \gets \mathrm{PMX}(p_a,p_b)$
+      \ENDIF
+    \STATE Otherwise (with probability \(1-p_c\)) do:
+      \STATE \quad Copy a random elite: $offspring \gets \mathrm{copy}(\mathrm{select\_random}(\mathcal{E}))$
+    \STATE Insert $offspring$ into new population $P_{g+1}$
+  \ENDFOR
+  \STATE Combine elites and created offspring: $P_{g+1} \gets \mathcal{E}\ \cup\ \{\text{all offspring}\}$
+  \STATE Evaluate $L(\pi)$ for all $\pi\in P_{g+1}$
+  \IF{any $\pi\in P_{g+1}$ has $L(\pi) < L(\pi_{\text{best}})$}
+    \STATE \quad $\pi_{\text{best}}\gets$ best individual in $P_{g+1}$
+    \STATE \quad $s\gets 0$
+  \ELSE
+    \STATE \quad $s\gets s+1$
+  \ENDIF
+  \STATE $g\gets g+1$
+\ENDWHILE
+\STATE \RETURN $\pi_{\text{best}}$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Solution representation }
+Order based representation being the conceptual approach viz. each individual (chromosome) is a permutation of city indices or permutation encoding is used for our implementation. Permutation encoding is the most suitable solution representation for implementing the Traveling Salesman Problem (TSP) in evolutionary computation because it naturally models the problem as an ordered list of cities, directly reflecting the tour sequence. This encoding guarantees valid solutions—each city is visited exactly once—without requiring repair mechanisms, unlike adjacency-based or binary encodings. It also supports efficient fitness evaluation and integrates seamlessly with specialized crossover operators like Order Crossover (OX) and Partially Mapped Crossover (PMX), which are designed to preserve tour validity. Compared to random keys encoding, permutation encoding avoids the need for sorting and retains meaningful tour structure, making it both practical and evolution-friendly.
+
+
+\subsection{Fitness function }
+
+We used path length as the fitness function for our open TSP evolutionary algorithm, meaning each candidate tour is evaluated by the sum of distances between consecutive cities without returning to the start, and selection favors individuals with smaller total distances.
+We use the open-path objective
+\[
+L(\pi)=\sum_{k=1}^{n-1} d(\pi(k),\pi(k+1)),
+\]
+evaluated with Manhattan distance. Selection favors individuals with lower \(L(\pi)\),  guiding crossover and selection to explore and exploit promising route segments while preserving diversity to avoid premature convergence.
+
+
+\section{Experimental part}
+\label{sec:experimentation}
+
+This section describes the setup of experiments conducted to evaluate and compare the performance of the greedy best-first search baseline with two evolutionary algorithm variants employing different crossover operators.
+
+\subsection{Hardware and Software Specifications}
+
+\subsubsection{Hardware Configuration}
+The experiments were conducted on the following hardware configuration:
+\begin{itemize}
+    \item Processor: AMD Ryzen 7 7840HS (16 cores) @ 3.8GHz
+    \item Memory: 48 GB RAM
+    \item Operating System: Linux Ubuntu 24.04
+\end{itemize}
+
+\subsubsection{Software Environment}
+The algorithms were implemented using the following software tools:
+\begin{itemize}
+    \item Programming Language: Python 3.12
+    \item Libraries and Frameworks: 
+    \begin{itemize}
+        \item NumPy (numerical computations and array operations)
+        \item Matplotlib (data visualization and convergence plots)
+    \end{itemize}
+    \item Development Environment: Visual Studio Code
+\end{itemize}
+
+\subsection{Experimental Procedure}
+
+\subsubsection{Algorithm Configuration}
+
+The evolutionary algorithm employs the following systematic design decisions:
+
+\begin{itemize}
+  \item{Selection Method}: Elite selection (fixed design choice ensuring the best individuals are preserved across generations)
+  \item{Configurable Parameters}: The following parameters were varied during experimentation:
+  \begin{itemize}
+    \item{Population Size}
+    \item{Stopping Criteria}
+    \item{Crossover Rate}
+    \item{Elite Rate}
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Execution Protocol}
+The experiments executed the algorithm following this protocol:
+\begin{enumerate}
+    \item \textbf{Initialization}: For evolutionary algorithms, the initial population was generated using random permutations of city sequences.  
+    \item \textbf{Independent Runs}: Each algorithm configuration was run at least 25 times with different random seeds to account for stochastic variation and ensure statistical validity.
+    \item \textbf{Termination Criteria}: The algorithm employ multiple configurable stopping criteria:
+    \begin{itemize}
+        \item \textbf{Iteration-based}: Maximum number of generations/iterations
+        \item \textbf{Time-based}: Maximum execution time limit
+        \item \textbf{Improvement-based}: Termination when improvement becomes less than a specified threshold
+    \end{itemize}
+    The specific stopping criteria (or combination of criteria) has been fine tuned during the parameter search process.
+    \item \textbf{Results exporting}: The results were exported in a CSV file for each parameter set.
+\end{enumerate}
+
+\subsection{Evaluation Data}
+
+\subsubsection{Problem Instances}
+The algorithm were evaluated on TSP instances of varying sizes to assess scalability and performance:
+\begin{itemize}
+    \item \textbf{Problem Sizes}: 76, 136, and 280 cities (EIL76, PR136, A280 datasets)
+    \item \textbf{Number of Instances}: 3 benchmark instances from TSPLIB
+\end{itemize}
+
+\subsubsection{Data Generation}
+The experimental evaluation employs benchmark datasets from TSPLIB:
+
+\textbf{Benchmark Datasets}: Standard TSP instances (EIL76, PR136, A280) from TSPLIB. These benchmark problems are parsed and stored as arrays of tuples containing city coordinates $(x, y)$.
+
+This standardized approach allows for direct comparison with existing literature and ensures reproducibility of results across different implementations.
+
+\subsubsection{Distance Metric}
+The distance metric used for calculating distances between cities is configurable as a parameter:
+
+\textbf{Euclidean Distance}: 
+\begin{equation}
+d(i,j) = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}
+\end{equation}
+
+\textbf{Manhattan Distance}: 
+\begin{equation}
+d(i,j) = |x_i - x_j| + |y_i - y_j|
+\end{equation}
+
+where $(x_i, y_i)$ and $(x_j, y_j)$ represent the coordinates of cities $i$ and $j$ respectively.
+
+\subsubsection{Performance Metrics}
+The following metrics were used to evaluate and compare algorithm performance:
+
+\begin{enumerate}
+    \item \textbf{Best Cost}: The minimum tour length found across all runs for each algorithm configuration
+    
+    \item \textbf{Average Cost}: The mean tour length across all independent runs, providing insight into algorithm consistency
+    
+    \item \textbf{Standard Deviation}: The variability of solution quality across runs, indicating algorithm robustness
+    
+    \item \textbf{Average Execution Time}: The mean computational time required for each algorithm to complete
+        
+    \item \textbf{Baseline Gap (Best)}: The percentage difference between the best solution found and the baseline algorithm's best solution, calculated as:
+    \begin{equation}
+    \frac{EA_{best} - Baseline_{best}}{Baseline_{best}} \times 100\%
+    \end{equation}
+    
+    \item \textbf{Baseline Gap (Average)}: The percentage difference between the average solution quality and the baseline algorithm's average solution quality, calculated as:
+    \begin{equation}
+    \frac{EA_{avg} - Baseline_{avg}}{Baseline_{avg}} \times 100\%
+    \end{equation}
+\end{enumerate}
+
+
+\section{Results and Analysis}
+\label{sec:results-analysis}
+
+\subsection[Experiment 1]{Tuning population size / generation number ratio over cost}
+
+This experiment was conducted to observe the effect of the population size / generation number ratio tuning on the cost. The results are shown in the following plots.
+
+\subsubsection{Results for EIL76 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/eil76.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/eil76.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
+There is no noticeable evolution trend for average cost, values seem to fluctuate between 1000 and 1200
+\newline
+There are several variations between average cost and best cost, values variating from a difference of 100 to even 400 at some point
+
+\subsubsection{Results for PR136 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/pr136.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/pr136.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
+We can see a slight trend of the cost going upwards, leaving aside some exceptional cases
+\newline
+The difference between average and best cost is pretty uniform for the majority of cases, variating between 0.5*10(pow)5 and 1*10(pow)5 
+\newline
+To give context, the majority of average costs for each point vary around 3.5*10(pow)5 and 4.5*10(pow)5
+
+\subsubsection{Results for A280 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/a280.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/a280.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
+We can see a general trend of the cost going upwards.
+\newline
+- differences between average cost and best cost seem to be approximately the same for almost every point, few exceptions aside.
+
+\subsubsection{Experiment results analysis}
+
+Conclusion: 
+\newline
+We do not obtain a specific trend from this ratio based on these three datasets, seems either fluctuating or going upwards.
+\newline
+- we know that usually a higher number of generations hands a lower cost up to some point decided somehow by the population size and the number of nodes, then it stalls to a certain value.
+\newline
+The test seems to be inconclusive.
+
+\subsection[Experiment 2]{Tuning generation number over cost}
+
+This experiment was conducted to observe the effect of the generation number on the cost. The results are shown in the following plots.
+
+\subsubsection{Results for EIL76 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={EIL76: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+60,1069.2
+190,1091.8
+155,1084.32
+234,1069.12
+227,1060.08
+118,1100.16
+197,1101.28
+55,1105.88
+217,1072.24
+37,1084.2
+44,1078.76
+256,1080.52
+185,1074.36
+184,1102.68
+50,1052.6
+187,1068.68
+214,1067.04
+127,1056.96
+137,1070
+76,1090.88
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+From this chart, we can see that the cost values stay quite stable across different generation numbers. In some cases, even lower generation numbers (like 50 or 60) already give good results. This means that for the EIL76 dataset, the algorithm is able to find decent solutions fairly quickly. Increasing the number of generations does not always lead to better results, so using a very large generation limit may not be necessary here.
+
+
+\subsubsection{Results for PR136 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={PR136: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+60,336980.4
+175,333165.4
+130,337200
+31,370948
+69,343558
+97,354553.2
+213,337971.12
+25,411410.68
+208,346084.48
+132,337442.8
+147,331659.8
+44,345268.24
+93,342480.08
+74,343186.72
+219,346802.84
+261,342074.24
+68,336588.6
+28,387245.76
+93,346554.04
+189,360018.92
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+This dataset shows a more obvious pattern. The costs are very high when the generation number is small (like 25, 28, or 31), but they become lower and more stable when we use more generations (above 130). This suggests that for bigger or more complex datasets like PR136, we really need more generations to get good results. A low generation limit is likely to stop the algorithm before it finds a good solution.
+
+
+
+
+\subsubsection{Results for A280 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={A280: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=blue,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+150,21855.76
+144,21922.16
+158,22186.88
+48,22200.96
+279,22092.08
+246,22407.6
+31,22226.88
+295,22187.36
+132,21812.24
+50,22219.2
+64,22369.2
+54,21825.68
+68,22241.84
+116,22131.36
+40,21584.96
+205,22385.44
+160,22633.68
+186,22557.76
+153,22007.28
+115,22301.04
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+In the A280 dataset, the results vary a bit more, but we can still notice some good costs even at lower generation numbers like 40 or 54. However, there are also several low-cost results around generation 130–160. This means that using more generations can sometimes help, but not always. Overall, there's no strong trend, so it might be enough to use a moderate generation number to get a good balance between performance and speed.
+
+
+
+\subsection{Experiment Results Analysis}
+
+From the experiments, we noticed a clear pattern: as the generation number increases, the cost generally goes down, meaning better solutions are found. This makes sense because more generations allow the algorithm to explore more possibilities and improve solutions over time.
+
+For the smaller EIL76 dataset, the cost stays quite stable even with fewer generations, so running the algorithm for too long doesn’t always help much. For the medium-sized A280 dataset, we see some improvement when increasing generations, but it’s not very consistent. However, for the largest PR136 dataset, increasing the generation number is very important — with too few generations, the algorithm struggles and ends with high costs.
+
+Overall, these results show that tuning the generation number is important, especially for bigger problems. Using too few generations can lead to poor solutions, while using enough generations helps find better answers.
+
+
+\subsection{Performance Comparison of Crossover Operators}
+
+This section evaluates the performance of the Order Crossover (OX) and Partially-Mapped Crossover (PMX) operators in our evolutionary algorithm (EA) implementation. The algorithm's parameters were individually tuned to optimize performance of each dataset. The following subsections detail the results for the EIL76, PR136, and A280 datasets.
+
+\subsubsection{Results for EIL76 Dataset}
+
+The EIL76 dataset comprises 76 cities. A baseline solution was established using a Greedy-First (GF) algorithm, yielding a cost of \textbf{872} in \textbf{0.00064} seconds. This was the only instance where the EA surpassed the GF baseline. 
+
+The EA, utilizing the OX operator, achieved a marginally superior average cost of \textbf{871.3} after \textbf{1.3916} seconds. While this represents an improvement in solution quality, the computational time required was approximately \textbf{2,174 times greater} than computational time of the GF algorithm. The algorithm's best average cost of \textbf{844.05} was reached at \textbf{1.6106} seconds, after which the solution quality stagnated.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Time (s)},
+  ylabel={Cost},
+  legend style={
+      at={(1,1)},
+      anchor=north east,
+      legend columns=1,
+      draw=none,
+      fill=white,
+      legend cell align=left,
+      nodes={scale=0.75, transform shape}
+  },
+  grid=major,
+  width=\textwidth,
+  height=0.6\textwidth
+]
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_min}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{OX}_{\text{MIN}}$}
+
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_max}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{OX}_{\text{MAX}}$}
+  
+  \addplot [blue, thick, no marks] table [col sep=comma, x={time}, y={ox_avg}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{OX}_{\text{AVG}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_min}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{PMX}_{\text{MIN}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_max}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{PMX}_{\text{MAX}}$}
+
+  \addplot [red, thick, no marks] table [col sep=comma, x={time}, y={pox_avg}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{PMX}_{\text{AVG}}$}
+
+  % --- horizontal baseline for gf-cost ---
+  \addplot [black, dashed, very thick, domain=0.00064826:2.005] {872};
+  \addlegendentry{Greedy-First}
+  
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\subsubsection{Results for PR136 Dataset}
+
+The PR136 dataset consists of 136 cities. The GF baseline for this problem is a cost of \textbf{122 474}, found in \textbf{0.00186} seconds. In this experiment, the EA failed to find a solution superior to the GF baseline. 
+
+The best average cost achieved by the EA was \textbf{295 596.31}, obtained after \textbf{2.4194} seconds. This cost is approximately \textbf{2.41 times greater} than the GF baseline, highlighting the difficulty of this problem instance for the EA.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Time (s)},
+  ylabel={Cost},
+  legend style={
+      at={(1,1)},
+      anchor=north east,
+      legend columns=1,
+      draw=none,
+      fill=white,
+      legend cell align=left,
+      nodes={scale=0.75, transform shape}
+  },
+  grid=major,
+  width=\textwidth,
+  height=0.6\textwidth
+]
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_min}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{OX}_{\text{MIN}}$}
+
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_max}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{OX}_{\text{MAX}}$}
+  
+  \addplot [blue, thick, no marks] table [col sep=comma, x={time}, y={ox_avg}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{OX}_{\text{AVG}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_min}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{PMX}_{\text{MIN}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_max}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{PMX}_{\text{MAX}}$}
+
+  \addplot [red, thick, no marks] table [col sep=comma, x={time}, y={pox_avg}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{PMX}_{\text{AVG}}$}
+
+  % --- horizontal baseline for gf-cost ---
+  \addplot [black, dashed, very thick, domain=0.001862049:5.0074] {122474};
+  \addlegendentry{Greedy-First}
+  
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\subsubsection{Results for A280 Dataset}
+
+The A280 data set includes 280 cities, for which the GF algorithm established a baseline cost of \textbf{3 552} in \textbf{0.007694} seconds. The best cost found by the EA was \textbf{3.99 times greater} than the baseline, indicating a significant performance gap in this larger problem.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Time (s)},
+  ylabel={Cost},
+  legend style={
+      at={(1,1)},
+      anchor=north east,
+      legend columns=1,
+      draw=none,
+      fill=white,
+      legend cell align=left,
+      nodes={scale=0.75, transform shape}
+  },
+  grid=major,
+  width=\textwidth,
+  height=0.6\textwidth
+]
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_min}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{OX}_{\text{MIN}}$}
+
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_max}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{OX}_{\text{MAX}}$}
+  
+  \addplot [blue, thick, no marks] table [col sep=comma, x={time}, y={ox_avg}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{OX}_{\text{AVG}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_min}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{PMX}_{\text{MIN}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_max}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{PMX}_{\text{MAX}}$}
+
+  \addplot [red, thick, no marks] table [col sep=comma, x={time}, y={pox_avg}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{PMX}_{\text{AVG}}$}
+
+  % --- horizontal baseline for gf-cost ---
+  \addplot [black, dashed, very thick, domain=0.007694006:25.6079] {3552};
+  \addlegendentry{Greedy-First}
+  
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\subsubsection{Analysis of Crossover Operator Performance}
+
+The experimental results consistently demonstrate the superior performance of the Order Crossover (OX) when compared to the Partially-Mapped Crossover (PMX) across all tested datasets.
+
+A key observation from the convergence plots is the rate of improvement. In each instance, the solutions generated by \textbf{OX converged towards better costs more rapidly} than those from PMX. The convergence curve for OX exhibits a steep initial improvement, whereas the improvement for PMX is slower and more gradual. 
+
+Furthermore, the variance in solution quality for OX decreases significantly over time, as indicated by the narrowing gap between the best, average, and worst costs. This suggests a \textbf{stable convergence} towards a specific region of the solution space. In contrast, PMX maintains a higher degree of solution variance throughout the experiment, suggesting that it is \textbf{ less effective at consistently exploiting promising search areas}, leading to greater performance instability.
+
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+This project successfully implemented and evaluated an evolutionary algorithm for solving the Traveling Salesman Problem (TSP), providing valuable insights into evolutionary computation techniques through comprehensive experimentation across multiple problem instances and parameter configurations.
+
+\subsection{Key Findings and Performance Analysis}
+
+Our evolutionary algorithm demonstrated varying performance across different problem sizes. For smaller instances (EIL76, 76 cities), the algorithm achieved competitive results, occasionally surpassing the greedy-first baseline (871.3 vs 872 average cost) but requiring approximately 2,174 times more execution time. As problem size increased, the performance gap widened significantly—the evolutionary algorithm was 3.99 times worse than the greedy baseline for A280 (280 cities) and 2.41 times worse for PR136 (136 cities).
+
+The systematic comparison of crossover operators revealed the superior performance of Order Crossover (OX) over Partially Mapped Crossover (PMX) across all datasets. OX exhibited faster convergence rates, more stable solution quality, and better exploitation of promising search regions, achieving steep initial improvement followed by stable convergence, while PMX maintained higher variance throughout the search process.
+
+Parameter sensitivity analysis demonstrated that smaller problems (EIL76) achieved good solutions with relatively few generations, while larger problems (PR136) required substantially more generations. The population size to generation ratio experiments proved inconclusive, suggesting that crossover operator choice and problem characteristics have more significant impacts on solution quality.
+
+\subsection{Computational Trade-offs and Future Directions}
+
+The computational analysis revealed inherent trade-offs in evolutionary computation approaches. While our algorithm demonstrated the ability to find high-quality solutions, the substantial computational overhead compared to simple heuristic methods raises questions about practical applicability for TSP instances where computational time is critical. The implementation of multiple stopping criteria provided flexibility in balancing solution quality with computational resources, but results suggest that hybrid approaches combining evolutionary algorithms with local search techniques might be necessary for competitive performance on larger instances.
+
+This project demonstrated a complete evolutionary computation workflow, from algorithm design through comprehensive experimental evaluation. The systematic approach to parameter tuning, implementation of multiple crossover operators, and rigorous statistical analysis provide a solid foundation for future research. Future directions include developing hybrid algorithms, implementing adaptive parameter control mechanisms, and investigating alternative crossover operators or problem-specific genetic operators.
+
+In conclusion, this work contributes to understanding evolutionary algorithms for TSP by providing empirical evidence of crossover operator effectiveness, insights into parameter sensitivity, and a comprehensive framework for algorithm evaluation. While results reveal computational efficiency limitations compared to simpler heuristics, they demonstrate the potential for evolutionary approaches in optimization problems where solution quality is prioritized over computational speed.
+
+\section{References}
+
+
+\bibliographystyle{ieeetr}
+\bibliography{references}
+
+
+  1) Bossek, J., Neumann, F.,
+    \emph{Exploring the feature space of TSP instances using quality diversity. In J. E. Fieldsend (Ed.), Proceedings of the Genetic and Evolutionary Computation Conference},
+    186--194,
+    2022,
+    ACM,
+    \url{https://doi.org/10.1145/3512290.3528851}
+
+  2)
+   Junior, C. A. da S., Tanaka, R. Y., da Silva, L. C. F., & Passaro, A. (2024). 
+   \emph{High-level hybridization of heuristics and metaheuristics to solve symmetric TSP: a comparative study.} 
+   \url{https://doi.org/10.48550/arxiv.2410.21274}  
+
+  3)
+  Saini, R., Mani, A., Prasad, M. S., Bhattacharyya, S., & Platos, J. (2025). \emph{Evolutionary Algorithm for the Traveling Salesman Problem With Innovative Encoding on Hybrid Quantum-Classical Machines.} IEEE Access, 13, 54223–54239. \url{https://doi.org/10.1109/ACCESS.2025.3554690}
+
+\end{document}

@@ -206,4 +206,18 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Latex
+*.pdf
+*.log
+*.aux
+*.out
+*.toc
+*.bbl
+*.blg
+*.synctex.gz
+_minted*
+
 results/*
+!results/baseline
+!results/generated_datasets
+!results/experiments
