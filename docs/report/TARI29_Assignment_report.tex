@@ -145,7 +145,7 @@ d_{\text{Manhattan}}(c_i,c_j)=|x_i-x_j|+|y_i-y_j|.
 \]
 
 
-• Three recent studies demonstrate the effectiveness of evolutionary algorithms in tackling the TSP. Bossek and Neumann introduce a Quality Diversity (QD) approach that evolves diverse TSP instances using a Map-Elites framework, enabling better algorithm selection by exploring the feature space and optimizing solver performance \cite{Bossek2022exploring}. Saini et al. propose a hybrid quantum-classical evolutionary algorithm using Sort Gray Binary Encoding (SGBET) to ensure valid TSP tours and leverage quantum superposition for enhanced scalability on NISQ devices \cite{Saini2025TSP}. Meanwhile, da Silva Junior et al. conduct a comparative study of high-level hybridizations between eight metaheuristics and heuristics like k-OPT, SISR, and segment uncrossing, showing that combining evolutionary strategies with problem-specific heuristics significantly improves solution quality across various TSP instances \cite{Junior2024TSP}. 
+• Three recent studies demonstrate the effectiveness of evolutionary algorithms in tackling the TSP. Bossek and Neumann introduce a Quality Diversity (QD) approach that evolves diverse TSP instances using a Map-Elites framework, enabling better algorithm selection by exploring the feature space and optimizing solver performance [1]. Saini et al. propose a hybrid quantum-classical evolutionary algorithm using Sort Gray Binary Encoding (SGBET) to ensure valid TSP tours and leverage quantum superposition for enhanced scalability on NISQ devices [3]. Meanwhile, da Silva Junior et al. conduct a comparative study of high-level hybridizations between eight metaheuristics and heuristics like k-OPT, SISR, and segment uncrossing, showing that combining evolutionary strategies with problem-specific heuristics significantly improves solution quality across various TSP instances [2]. 
 These inspired hybrid approaches of the academic papers reinforced our choice for a hybrid of ‘exploration and exploitation’ in Order Crossover(OX) and Partially Mapped Crossover(PMX) as compared to say Cycle Crossover(CX) that leans towards exploitation and can be destructive to adjacency relationships.
 
 • In the context of the TSP, maintaining the exact order or position of cities is less critical than preserving high-quality partial routes. The effectiveness of genetic algorithms in this domain largely stems from their ability to retain and recombine these beneficial substructures from parent solutions. Order Crossover (OX) is particularly well-suited for this task, as it maintains essential adjacency relationships while still enabling genetic diversity through recombination. This characteristic explains its consistent superiority over other crossover operators in TSP applications, regardless of whether the explicit sequence of cities is considered important. Thus motivating our particular implementation.
@@ -909,5 +909,21 @@ For future work, we suggest looking into how generation number interacts with ot
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
+
+
+  1) Bossek, J., Neumann, F.,
+    \emph{Exploring the feature space of TSP instances using quality diversity. In J. E. Fieldsend (Ed.), Proceedings of the Genetic and Evolutionary Computation Conference},
+    186--194,
+    2022,
+    ACM,
+    \url{https://doi.org/10.1145/3512290.3528851}
+
+  2)
+   Junior, C. A. da S., Tanaka, R. Y., da Silva, L. C. F., & Passaro, A. (2024). 
+   \emph{High-level hybridization of heuristics and metaheuristics to solve symmetric TSP: a comparative study.} 
+   \url{https://doi.org/10.48550/arxiv.2410.21274}  
+
+  3)
+  Saini, R., Mani, A., Prasad, M. S., Bhattacharyya, S., & Platos, J. (2025). \emph{Evolutionary Algorithm for the Traveling Salesman Problem With Innovative Encoding on Hybrid Quantum-Classical Machines.} IEEE Access, 13, 54223–54239. \url{https://doi.org/10.1109/ACCESS.2025.3554690}
 
 \end{document}
