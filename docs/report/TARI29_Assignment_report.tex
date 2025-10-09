@@ -1,0 +1,537 @@
+% TARI29_Assignment_report_template.tex
+% This is a template for the assignment reports
+% TARI29 Artificial Intelligence, 7.5 credits, Autumn 2025
+% Original version by:  Vladimir Tarasov, 2024
+% Revised by:           Alexandros Tzanetos, 2024 
+
+% Use a modern class instead of an old article class
+\documentclass{scrartcl}
+
+\KOMAoptions{
+    parskip=half,  % full, off
+    fontsize=12pt, % base font size (10pt default)
+    % headings=big,% small/normal/big headings (normal is default), 
+    % paper=a5,    % paper format (a4 default) 
+    pagesize=auto  % Use paper format for PDF too
+}
+
+% ---------------------- Report details --------------------- %
+\newcommand{\docauthor}{Andrej Kutny, Charles Madjeri, Samrat Debnath \\ Vladimir Giustacchini, Aikeya Ainiwaer}
+\newcommand{\courseyear}{2025}
+\newcommand{\coursename}{TARI29 Artificial Intelligence}
+\newcommand{\coursecredits}{7.5 credits}
+\newcommand{\fullcoursename}{\coursename, \coursecredits}
+\newcommand{\termname}{Autumn \courseyear}
+\newcommand{\groupnumber}{4}
+\newcommand{\reportname}{Group \groupnumber\ Assignment Report}
+\newcommand{\assignmentname}{Evolutionary Computation Assignment}
+% ------------------ End of report details ------------------ %
+
+
+
+% ---------- Setting up properties of the PDF file ---------- %
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    allcolors=blue,
+    pdftitle={\reportname},
+    pdfauthor={\docauthor},
+    pdfsubject={\coursename, \termname}
+	% pdfpagemode=FullScreen,
+	% pdfpagemode= UseOutlines % the default if present
+}
+% ------------ End of properties of the PDF file ------------ %
+
+
+
+% ----------- Setting up the headers and footers ------------ %
+\usepackage{scrlayer-scrpage}
+\pagestyle{scrheadings}
+\KOMAoptions{% 
+    headsepline,% line below the header
+    plainheadsepline,% also on scrplain
+}
+\clearpairofpagestyles % Erase all current configurations (updated from deprecated \clearscrheadfoot)
+% inner part of the header [titel_page]{other_pages}
+\ihead[\coursename, \courseyear]{\coursename, \courseyear}
+% outer part of the header [titel_page]{other_pages}
+\ohead{\assignmentname}
+% center part of the footer [titel_page]{other_pages}
+\cfoot[\textup{Page \pagemark\ of \pageref{LastPage}}]{\textup{Page \pagemark\ of \pageref{LastPage}}}
+% ------------- End of the headers and footers -------------- %
+
+
+
+% ---------------- Setting up the title page ---------------- %
+\title{\reportname}
+\subtitle{An Evolutionary Algorithm for the Traveling Salesman Problem}
+\author{\docauthor}
+\date{\today}
+% ------------------ End of the title page ------------------ %
+
+
+
+% --------------- Packages and custom commands -------------- %
+% Specify the input encoding of the source file as UTF8 
+\usepackage[utf8]{inputenc}
+% The T1 font encoding is an 8-bit encoding and fully supports words containing accented characters
+\usepackage[T1]{fontenc}
+% Load Latin modern fonts in outline format
+\usepackage{lmodern}
+% Load better typewriter font
+\usepackage{inconsolata}
+% For better hyphenation patterns
+\usepackage[english]{babel}
+% For improved micro-typography
+\usepackage{microtype}
+% Switch off extra space after a sentence
+\frenchspacing
+% To be able to iclude pictures
+\usepackage{graphicx}
+\usepackage{zref-totpages} % To get the total number of pages
+\usepackage{lastpage} % For LastPage reference
+\usepackage{mathtools,amsmath} % for advanced math formulas
+ % To highlight source code
+\usepackage{minted}
+% Default options for all minted environments
+\setminted{
+           style=default, % for minted envronment
+           autogobble, % automatically remove all common leading whitespace
+           xleftmargin=10pt, % indentation to add (on the left) before the listing
+           numbersep=6pt, % gap between numbers and start of line
+           linenos, % enables line numbers
+           mathescape % enables the usual math mode inside comments
+}
+\setmintedinline[c]{style=default} % for minted inlines
+% Flexible handling of verbatim text
+\usepackage{fancyvrb}
+% For well-spaced lines and guidelines in tables
+\usepackage{booktabs}
+% To typeset algorithms or pseudocode in LaTeX 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% For plots and graphs
+\usepackage{pgfplots}
+\pgfplotsset{width=10cm,compat=1.18}
+
+% To generate placeholder text - can be deleted when you have written real text
+\usepackage{lipsum}
+% ----------- End of packages and custom commands ----------- %
+
+
+\begin{document}
+
+\maketitle
+
+% % It can be commented out if you do not want the table of contents
+% \tableofcontents 
+
+
+\section{Introduction}
+\label{sec:intro}
+
+\textcolor{red}{The introduction should briefly introduce the assignment and its purpose.}
+
+\lipsum[4]
+
+
+\section{The Traveling Salesman Problem}
+\label{sec:problem_description}
+
+\textcolor{red}{The second section should present the problem you tackle using your evolutionary approach. Overall, this section should include:}
+
+{\color{red}
+\begin{itemize}
+    \item The mathematical formulation considered in your study. Some problems have a clear mathematical model (e.g., Travelling Salesman Problem), while others do not (e.g., $n$-Queens). Based on the problem you chose, search the literature and find a proper way to present the problem.
+    \item One paragraph that briefly presents at least 3 published academic works where any evolutionary approach is used to solve the problem. It would be wise to cite here works that influenced your algorithm. This practice saves you time from looking for additional academic resources. You can find more information about reading and searching in the literature in \cite{zobel2014reading}.
+    \item The motivation behind the evolutionary approach you decided to develop. A good practice would be to align the motivation with some literature gap found in the academic works you presented above. However, this is not mandatory. You can motivate your selection on the characteristics of the algorithm making it proper for the problem.
+\end{itemize}
+}
+
+\lipsum[2]
+
+
+\section{Algorithm}
+\label{sec:algorithm}
+
+\textcolor{red}{The third section should present the evolutionary approach you developed. You can divide this section into subsection. In any case, you should mention the following details:}
+
+\textcolor{red}{\textbf{Evolutionary approach.} Clearly describe the algorithm you developed. You should clearly explain the evolutionary operators you used and what modifications you did to match the problem. It is extremely important to present also a pseudocode of your algorithm. An example is given in \ref{alg:pseudocode_example}, below. For more insight into presentation of algorithms, you can advise \cite{zobel2014algorithms}.}
+
+{
+\color{red}To typeset pseudocode in \LaTeX\ you can use one of the following options:
+\begin{itemize}
+    \item Choose ONE of the (\texttt{algpseudocode} OR \texttt{algcompatible} OR \texttt{algorithmic}) packages to typeset algorithm bodies, and the algorithm package for captioning the algorithm.
+    \item The \texttt{algorithm2e} package.
+\end{itemize}
+You can find more information here: \url{https://www.overleaf.com/learn/latex/Algorithms}
+}
+
+\begin{algorithm}
+\caption{Example of an algorithm's pseudocode}\label{alg:pseudocode_example}
+\begin{algorithmic}
+\Require $n \geq 0$
+\Ensure $y = x^n$
+\State $y \gets 1$
+\State $X \gets x$
+\State $N \gets n$
+\While{$N \neq 0$}
+\If{$N$ is even}
+    \State $X \gets X \times X$
+    \State $N \gets \frac{N}{2}$  \Comment{This is a comment}
+\ElsIf{$N$ is odd}
+    \State $y \gets y \times X$
+    \State $N \gets N - 1$
+\EndIf
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\textcolor{red}{\textbf{Solution representation.} Clearly describe the solution representation you used. You can use figures to improve the comprehensibility of this part.}
+
+\textcolor{red}{\textbf{Fitness function.} It is also very important to mention the fitness function you used. In many cases, the objective function of the problem is not the same as the fitness function used in an evolutionary algorithm. An example, following the principles of \cite{zobel2014mathematics}, is given below.}
+
+\begin{equation}
+    F = \sum_{i=1}^d x_i^2 
+\end{equation}
+where $x_i$ is the $i$-th gene (i.e., decision variable) in the solution and $d$ corresponds to the number of decision variables in the problem.
+
+\textcolor{red}{\textbf{Note:} Change the section's title to match the name of the algorithm you developed for your assignment.}
+
+\lipsum[3]
+
+
+\section{Experimental part}
+\label{sec:experimentation}
+
+{\color{red}
+This section describes the setup of experiments \cite{zobel2014experimentation}:
+
+\begin{itemize}
+    \item Provide the details of the hardware and software that you used.
+    \item Describe the steps you carried out during your experiments.
+    \item Detail the data you used for the evaluation of your algorithm.
+\end{itemize}
+}
+
+This section describes the setup of experiments conducted to evaluate and compare the performance of the greedy best-first search baseline with two evolutionary algorithm variants employing different crossover operators.
+
+\subsection{Hardware and Software Specifications}
+
+\subsubsection{Hardware Configuration}
+The experiments were conducted on the following hardware configurations:
+
+\textbf{Configuration 1:}
+\begin{itemize}
+    \item \textbf{Processor}: AMD Ryzen 7 7840HS (16 cores) @ 3.8GHz
+    \item \textbf{Memory}: 48 GB RAM
+    \item \textbf{Operating System}: Linux Ubuntu 24.04
+\end{itemize}
+
+\textbf{Configuration 3:}
+\begin{itemize}
+    \item \textbf{Processor}: AMD Ryzen7 9800X3D (8 cores) @4.7GHz
+    \item \textbf{Memory}: 32 GB DDR5 5200MHz 
+    \item \textbf{Operating System}: Windows10 pro
+\end{itemize}
+
+\subsubsection{Software Environment}
+The algorithms were implemented using the following software tools:
+\begin{itemize}
+    \item \textbf{Programming Language}: Python 3.12
+    \item \textbf{Libraries and Frameworks}: 
+    \begin{itemize}
+        \item NumPy (numerical computations and array operations)
+        \item Matplotlib (data visualization and convergence plots)
+    \end{itemize}
+    \item \textbf{Development Environment}: Visual Studio Code
+\end{itemize}
+
+\subsection{Experimental Procedure}
+
+\subsubsection{Algorithm Configuration}
+
+\textbf{Design Choices:}
+The evolutionary algorithm employs the following systematic design decisions:
+\begin{itemize}
+    \item \textbf{Selection Method}: Elite selection (fixed design choice ensuring the best individuals are preserved across generations)
+\end{itemize}
+
+\textbf{Configurable Parameters:}
+The following parameters were varied during experimentation:
+\begin{itemize}
+    \item \textbf{Population Size}: \textcolor{red}{[TO BE COMPLETED - configurable parameter, e.g., 50, 100, 200]}
+    \item \textbf{Stopping Criteria}: Configurable termination conditions (iteration-based, time-based, or improvement-based as detailed below)
+    \item \textbf{Crossover Rate}: \textcolor{red}{[TO BE COMPLETED - configurable parameter, e.g., 0.7, 0.8, 0.9]}
+    \item \textbf{Elite Rate}: \textcolor{red}{[TO BE COMPLETED - configurable parameter representing the proportion of population preserved as elite, e.g., 0.1, 0.2, 0.3]}
+\end{itemize}
+
+\subsubsection{Execution Protocol}
+Each algorithm was executed following this protocol:
+\begin{enumerate}
+    \item \textbf{Independent Runs}: Each algorithm configuration was run at least 25 times with different random seeds to account for stochastic variation and ensure statistical validity. \textcolor{red}{[TO BE COMPLETED - specify if more runs were conducted based on stopping criteria]}
+    \item \textbf{Initialization}: For evolutionary algorithms, the initial population was generated using random permutations of city sequences. For the greedy best-first search, different starting cities were used across runs to evaluate sensitivity to initial conditions.
+    \item \textbf{Termination Criteria}: The algorithms employ multiple configurable stopping criteria:
+    \begin{itemize}
+        \item \textbf{Iteration-based}: Maximum number of generations/iterations \textcolor{red}{[TO BE COMPLETED - specify value when used]}
+        \item \textbf{Time-based}: Maximum execution time limit \textcolor{red}{[TO BE COMPLETED - specify duration when used]}
+        \item \textbf{Improvement-based}: Termination when no improvement in best solution is observed for a specified number of consecutive generations \textcolor{red}{[TO BE COMPLETED - specify threshold when used]}
+    \end{itemize}
+    The specific stopping criterion (or combination of criteria) used depends on the experimental configuration.
+    \item \textbf{Performance Recording}: For each run, the best solution quality, average solution quality, and computational time were recorded.
+\end{enumerate}
+
+\subsection{Evaluation Data}
+
+\subsubsection{Problem Instances}
+The algorithms were evaluated on TSP instances of varying sizes to assess scalability and performance:
+\begin{itemize}
+    \item \textbf{Problem Sizes}: \textcolor{red}{[TO BE COMPLETED - e.g., 20, 50, 100, and 200 cities]}
+    \item \textbf{Number of Instances}: \textcolor{red}{[TO BE COMPLETED - e.g., number of instances per problem size]}
+\end{itemize}
+
+\subsubsection{Data Generation}
+The experimental evaluation employs two types of datasets:
+
+\textbf{Benchmark Datasets}: Standard TSP instances from TSPLIB \textcolor{red}{[TO BE COMPLETED - specify which instances, e.g., berlin52, eil76, kroA100]}. These benchmark problems are parsed and stored as arrays of tuples containing city coordinates $(x, y)$.
+
+\textbf{Self-Generated Datasets}: Randomly generated TSP instances \textcolor{red}{[TO BE COMPLETED - specify generation method, e.g., cities with coordinates uniformly distributed in a defined range, number of instances generated]}.
+
+This combination of benchmark and synthetic datasets allows for both standardized comparison with existing literature and controlled experimentation across various problem characteristics.
+
+\subsubsection{Distance Metric}
+The distance metric used for calculating distances between cities is configurable as a parameter:
+
+\textbf{Euclidean Distance}: 
+\begin{equation}
+d(i,j) = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}
+\end{equation}
+
+\textbf{Manhattan Distance}: 
+\begin{equation}
+d(i,j) = |x_i - x_j| + |y_i - y_j|
+\end{equation}
+
+where $(x_i, y_i)$ and $(x_j, y_j)$ represent the coordinates of cities $i$ and $j$ respectively.
+
+\subsection{Performance Metrics}
+
+The following metrics were used to evaluate and compare algorithm performance:
+
+\begin{enumerate}
+    \item \textbf{Best Solution Quality}: The length of the shortest tour found across all runs for each algorithm.
+    
+    \item \textbf{Average Solution Quality}: The mean tour length across all independent runs, providing insight into algorithm consistency.
+    
+    \item \textbf{Standard Deviation}: The variability of solution quality across runs, indicating algorithm robustness.
+    
+    \item \textbf{Computational Time}: The average execution time required for each algorithm to complete.
+    
+    \item \textbf{Convergence Behavior}: The evolution of solution quality over generations/iterations, analyzed through convergence plots.
+\end{enumerate}
+
+Statistical significance of performance differences between algorithms was assessed using \textcolor{red}{[TO BE COMPLETED - e.g., paired t-tests with $\alpha = 0.05$ significance level]}.
+
+\section{Results and Analysis}
+\label{sec:results-analysis}
+
+\subsubsection{Results for EIL76 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={EIL76: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+60,1069.2
+190,1091.8
+155,1084.32
+234,1069.12
+227,1060.08
+118,1100.16
+197,1101.28
+55,1105.88
+217,1072.24
+37,1084.2
+44,1078.76
+256,1080.52
+185,1074.36
+184,1102.68
+50,1052.6
+187,1068.68
+214,1067.04
+127,1056.96
+137,1070
+76,1090.88
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+From this chart, we can see that the cost values stay quite stable across different generation numbers. In some cases, even lower generation numbers (like 50 or 60) already give good results. This means that for the EIL76 dataset, the algorithm is able to find decent solutions fairly quickly. Increasing the number of generations does not always lead to better results, so using a very large generation limit may not be necessary here.
+
+
+
+\subsubsection{Results for PR136 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={PR136: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+60,336980.4
+175,333165.4
+130,337200
+31,370948
+69,343558
+97,354553.2
+213,337971.12
+25,411410.68
+208,346084.48
+132,337442.8
+147,331659.8
+44,345268.24
+93,342480.08
+74,343186.72
+219,346802.84
+261,342074.24
+68,336588.6
+28,387245.76
+93,346554.04
+189,360018.92
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+This dataset shows a more obvious pattern. The costs are very high when the generation number is small (like 25, 28, or 31), but they become lower and more stable when we use more generations (above 130). This suggests that for bigger or more complex datasets like PR136, we really need more generations to get good results. A low generation limit is likely to stop the algorithm before it finds a good solution.
+
+
+
+
+\subsubsection{Results for A280 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={A280: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=blue,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+150,21855.76
+144,21922.16
+158,22186.88
+48,22200.96
+279,22092.08
+246,22407.6
+31,22226.88
+295,22187.36
+132,21812.24
+50,22219.2
+64,22369.2
+54,21825.68
+68,22241.84
+116,22131.36
+40,21584.96
+205,22385.44
+160,22633.68
+186,22557.76
+153,22007.28
+115,22301.04
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+In the A280 dataset, the results vary a bit more, but we can still notice some good costs even at lower generation numbers like 40 or 54. However, there are also several low-cost results around generation 130–160. This means that using more generations can sometimes help, but not always. Overall, there's no strong trend, so it might be enough to use a moderate generation number to get a good balance between performance and speed.
+
+
+
+\subsection{Experiment Results Analysis}
+
+From the experiments, we noticed a clear pattern: as the generation number increases, the cost generally goes down, meaning better solutions are found. This makes sense because more generations allow the algorithm to explore more possibilities and improve solutions over time.
+
+For the smaller EIL76 dataset, the cost stays quite stable even with fewer generations, so running the algorithm for too long doesn’t always help much. For the medium-sized A280 dataset, we see some improvement when increasing generations, but it’s not very consistent. However, for the largest PR136 dataset, increasing the generation number is very important — with too few generations, the algorithm struggles and ends with high costs.
+
+Overall, these results show that tuning the generation number is important, especially for bigger problems. Using too few generations can lead to poor solutions, while using enough generations helps find better answers.
+
+
+
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+
+In this work, we studied how changing the generation number affects the performance of an evolutionary algorithm on three datasets of different sizes.
+
+The results showed that for small problems like EIL76, the algorithm can find good solutions quickly, so a low generation number is often enough. For medium problems like A280, increasing generations sometimes helps but with mixed results. For larger problems like PR136, higher generation numbers are clearly needed to reach good solutions.
+
+This means that when using evolutionary algorithms, it’s important to choose the generation limit based on the problem size. Too few generations can stop the algorithm before it finds good solutions, but too many may waste time without much gain.
+
+For future work, we suggest looking into how generation number interacts with other parameters, like population size or mutation rates. Also, adaptive methods that adjust the generation number during the run could improve efficiency.
+
+
+
+\lipsum[4]
+
+\bibliographystyle{ieeetr}
+\bibliography{references}
+
+\end{document}
