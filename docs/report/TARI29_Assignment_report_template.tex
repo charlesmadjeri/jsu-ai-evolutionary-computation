@@ -412,6 +412,150 @@ Statistical significance of performance differences between algorithms was asses
 \label{fig:plot_example}
 \end{figure}
 
+% PLOTS FOR PR136, A280, EIL76
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/pr136.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/pr136.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/a280.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/a280.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=\textwidth, height=9cm,
+  xlabel={Generation Nr / Population Size},
+  ylabel={Cost},
+  x tick label style={rotate=60,anchor=east},
+  legend pos=north west,
+  enlarge x limits=0.02,
+  scaled x ticks=false,
+  x tick label style={/pgf/number format/fixed, /pgf/number format/precision=3},
+]
+
+% average point (red circle) + whisker down to min
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+  error bars/.cd,
+    y dir=minus,   % draw whisker downward only
+    y explicit,    % use given expression for its size
+]
+table[
+  x={gen_pop_ratio},
+  y=average_cost,
+  y error expr={\thisrow{average_cost}-\thisrow{best_cost}},  % whisker length
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/eil76.csv};
+\addlegendentry{average}
+
+% bottom markers (min)
+\addplot+[
+  only marks,
+  mark=square*,
+  color=red,
+  thick,
+]
+table[
+  x={gen_pop_ratio},
+  y=best_cost,
+  col sep=comma
+]{tuning_ratio_over_cost_csv_files/eil76.csv};
+\addlegendentry{min}
+
+\end{axis}
+\end{tikzpicture}
+
 \lipsum[4]
 
 \section{Conclusions}
