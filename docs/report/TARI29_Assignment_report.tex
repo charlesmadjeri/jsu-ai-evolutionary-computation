@@ -488,6 +488,169 @@ Conclusion:
 - we know that usually a higher number of generations hands a lower cost up to some point decided somehow by the population size and the number of nodes, then it stalls to a certain value
 - the test seems to be inconclusive
 
+\subsection{Performance Comparison of Crossover Operators}
+
+This section evaluates the performance of the Order Crossover (OX) and Partially-Mapped Crossover (PMX) operators in our evolutionary algorithm (EA) implementation. The algorithm's parameters were individually tuned to optimize performance of each dataset. The following subsections detail the results for the EIL76, PR136, and A280 datasets.
+
+\subsubsection{Results for EIL76 Dataset}
+
+The EIL76 dataset comprises 76 cities. A baseline solution was established using a Greedy-First (GF) algorithm, yielding a cost of \textbf{872} in \textbf{0.00064} seconds. This was the only instance where the EA surpassed the GF baseline. 
+
+The EA, utilizing the OX operator, achieved a marginally superior average cost of \textbf{871.3} after \textbf{1.3916} seconds. While this represents an improvement in solution quality, the computational time required was approximately \textbf{2,174 times greater} than computational time of the GF algorithm. The algorithm's best average cost of \textbf{844.05} was reached at \textbf{1.6106} seconds, after which the solution quality stagnated.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Time (s)},
+  ylabel={Cost},
+  legend style={
+      at={(1,1)},
+      anchor=north east,
+      legend columns=1,
+      draw=none,
+      fill=white,
+      legend cell align=left,
+      nodes={scale=0.75, transform shape}
+  },
+  grid=major,
+  width=\textwidth,
+  height=0.6\textwidth
+]
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_min}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{OX}_{\text{MIN}}$}
+
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_max}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{OX}_{\text{MAX}}$}
+  
+  \addplot [blue, thick, no marks] table [col sep=comma, x={time}, y={ox_avg}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{OX}_{\text{AVG}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_min}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{PMX}_{\text{MIN}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_max}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{PMX}_{\text{MAX}}$}
+
+  \addplot [red, thick, no marks] table [col sep=comma, x={time}, y={pox_avg}] {pmx_vs_ox/eil76.csv};
+  \addlegendentry{$\text{PMX}_{\text{AVG}}$}
+
+  % --- horizontal baseline for gf-cost ---
+  \addplot [black, dashed, very thick, domain=0.00064826:2.005] {872};
+  \addlegendentry{Greedy-First}
+  
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\subsubsection{Results for PR136 Dataset}
+
+The PR136 dataset consists of 136 cities. The GF baseline for this problem is a cost of \textbf{122 474}, found in \textbf{0.00186} seconds. In this experiment, the EA failed to find a solution superior to the GF baseline. 
+
+The best average cost achieved by the EA was \textbf{295 596.31}, obtained after \textbf{2.4194} seconds. This cost is approximately \textbf{2.41 times greater} than the GF baseline, highlighting the difficulty of this problem instance for the EA.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Time (s)},
+  ylabel={Cost},
+  legend style={
+      at={(1,1)},
+      anchor=north east,
+      legend columns=1,
+      draw=none,
+      fill=white,
+      legend cell align=left,
+      nodes={scale=0.75, transform shape}
+  },
+  grid=major,
+  width=\textwidth,
+  height=0.6\textwidth
+]
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_min}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{OX}_{\text{MIN}}$}
+
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_max}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{OX}_{\text{MAX}}$}
+  
+  \addplot [blue, thick, no marks] table [col sep=comma, x={time}, y={ox_avg}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{OX}_{\text{AVG}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_min}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{PMX}_{\text{MIN}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_max}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{PMX}_{\text{MAX}}$}
+
+  \addplot [red, thick, no marks] table [col sep=comma, x={time}, y={pox_avg}] {pmx_vs_ox/pr136.csv};
+  \addlegendentry{$\text{PMX}_{\text{AVG}}$}
+
+  % --- horizontal baseline for gf-cost ---
+  \addplot [black, dashed, very thick, domain=0.001862049:5.0074] {122474};
+  \addlegendentry{Greedy-First}
+  
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\subsubsection{Results for A280 Dataset}
+
+The A280 data set includes 280 cities, for which the GF algorithm established a baseline cost of \textbf{3 552} in \textbf{0.007694} seconds. The best cost found by the EA was \textbf{3.99 times greater} than the baseline, indicating a significant performance gap in this larger problem.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  xlabel={Time (s)},
+  ylabel={Cost},
+  legend style={
+      at={(1,1)},
+      anchor=north east,
+      legend columns=1,
+      draw=none,
+      fill=white,
+      legend cell align=left,
+      nodes={scale=0.75, transform shape}
+  },
+  grid=major,
+  width=\textwidth,
+  height=0.6\textwidth
+]
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_min}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{OX}_{\text{MIN}}$}
+
+  \addplot [blue!25, thick, no marks] table [col sep=comma, x={time}, y={ox_max}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{OX}_{\text{MAX}}$}
+  
+  \addplot [blue, thick, no marks] table [col sep=comma, x={time}, y={ox_avg}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{OX}_{\text{AVG}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_min}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{PMX}_{\text{MIN}}$}
+
+  \addplot [red!25, thick, no marks] table [col sep=comma, x={time}, y={pox_max}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{PMX}_{\text{MAX}}$}
+
+  \addplot [red, thick, no marks] table [col sep=comma, x={time}, y={pox_avg}] {pmx_vs_ox/a280.csv};
+  \addlegendentry{$\text{PMX}_{\text{AVG}}$}
+
+  % --- horizontal baseline for gf-cost ---
+  \addplot [black, dashed, very thick, domain=0.007694006:25.6079] {3552};
+  \addlegendentry{Greedy-First}
+  
+\end{axis}
+\end{tikzpicture}
+\end{figure}
+
+\subsubsection{Analysis of Crossover Operator Performance}
+
+The experimental results consistently demonstrate the superior performance of the Order Crossover (OX) when compared to the Partially-Mapped Crossover (PMX) across all tested datasets.
+
+A key observation from the convergence plots is the rate of improvement. In each instance, the solutions generated by \textbf{OX converged towards better costs more rapidly} than those from PMX. The convergence curve for OX exhibits a steep initial improvement, whereas the improvement for PMX is slower and more gradual. 
+
+Furthermore, the variance in solution quality for OX decreases significantly over time, as indicated by the narrowing gap between the best, average, and worst costs. This suggests a \textbf{stable convergence} towards a specific region of the solution space. In contrast, PMX maintains a higher degree of solution variance throughout the experiment, suggesting that it is \textbf{ less effective at consistently exploiting promising search areas}, leading to greater performance instability.
+
 \section{Conclusions}
 \label{sec:conclusions}
 
