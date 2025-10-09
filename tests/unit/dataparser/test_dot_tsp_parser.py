@@ -30,7 +30,7 @@ def test_load_tsp_data_no_eof(tmp_path):
     path = tmp_path / "no_eof.tsp"
     path.write_text(content)
     result = load_tsp_data(str(path))
-    assert result == [("10", "20"), ("30", "40"), ("50", "60")]
+    assert result == [(10, 20), (30, 40), (50, 60)]
 
 def test_load_tsp_data_valid_file(tmp_path):
     content = (
@@ -45,7 +45,7 @@ def test_load_tsp_data_valid_file(tmp_path):
     path = tmp_path / "valid.tsp"
     path.write_text(content)
     result = load_tsp_data(str(path))
-    assert result == [("10", "20"), ("30", "40"), ("50", "60")]
+    assert result == [(10, 20), (30, 40), (50, 60)]
 
 def test_load_tsp_data_no_node_section(tmp_path):
     content = (
@@ -71,4 +71,4 @@ def test_load_tsp_data_irregular_spacing(tmp_path):
     path = tmp_path / "irregular_spacing.tsp"
     path.write_text(content)
     result = load_tsp_data(str(path))
-    assert result == [("10", "20"), ("30", "40"), ("50", "60")]
+    assert result == [(10, 20), (30, 40), (50, 60)]
