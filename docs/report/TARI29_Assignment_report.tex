@@ -606,8 +606,7 @@ stop_iterations,average_cost
 \end{axis}
 \end{tikzpicture}
 
-From this chart, we can see that the cost values stay quite stable across different generation numbers. In some cases, even lower generation numbers (like 50 or 60) already give good results. This means that for the EIL76 dataset, the algorithm is able to find decent solutions fairly quickly. Increasing the number of generations does not always lead to better results, so using a very large generation limit may not be necessary here.
-
+Here we can see that, the cost values are relatively close to each other when the generation number increase, but no clear pattern between generation number and cost can be observed. Some lower generation numbers result in low costs, and higher generation numbers do not always improve the outcome. Therefore, no consistent relationship between generation number and average cost is evident in this case.
 
 \subsubsection{Results for PR136 dataset:}
 
@@ -661,7 +660,8 @@ stop_iterations,average_cost
 \end{axis}
 \end{tikzpicture}
 
-This dataset shows a more obvious pattern. The costs are very high when the generation number is small (like 25, 28, or 31), but they become lower and more stable when we use more generations (above 130). This suggests that for bigger or more complex datasets like PR136, we really need more generations to get good results. A low generation limit is likely to stop the algorithm before it finds a good solution.
+In the PR136 dataset, the highest cost values are observed at very low generation numbers (e.g., 25 to 40). As the generation number increases, the cost values clearly decrease with it, but there is still some volatility. However, beyond a certain point the benefit is unclear.
+
 
 
 
@@ -718,17 +718,25 @@ stop_iterations,average_cost
 \end{axis}
 \end{tikzpicture}
 
-In the A280 dataset, the results vary a bit more, but we can still notice some good costs even at lower generation numbers like 40 or 54. However, there are also several low-cost results around generation 130–160. This means that using more generations can sometimes help, but not always. Overall, there's no strong trend, so it might be enough to use a moderate generation number to get a good balance between performance and speed.
+In this dataset, cost values are more spread out. Both low and high costs are observed before generation number hit 160. after that it cost value remain reletively high. Overall, no strong trend is visible, and the cost does not clearly depend on the generation number.
 
 
 
-\subsection{Experiment Results Analysis}
 
-From the experiments, we noticed a clear pattern: as the generation number increases, the cost generally goes down, meaning better solutions are found. This makes sense because more generations allow the algorithm to explore more possibilities and improve solutions over time.
+\subsubsection{Experiment Results Analysis}
 
-For the smaller EIL76 dataset, the cost stays quite stable even with fewer generations, so running the algorithm for too long doesn’t always help much. For the medium-sized A280 dataset, we see some improvement when increasing generations, but it’s not very consistent. However, for the largest PR136 dataset, increasing the generation number is very important — with too few generations, the algorithm struggles and ends with high costs.
+This experiment aimed to observe how changing the generation number limit affects the cost produced by an evolutionary algorithm across different datasets. Below is a summary of the results.
 
-Overall, these results show that tuning the generation number is important, especially for bigger problems. Using too few generations can lead to poor solutions, while using enough generations helps find better answers.
+ELI76:The cost values stay relatively close together regardless of the generation number. Some low-cost results appear at both low and high generation numbers, but no clear pattern is observed. Increasing the generation number does not consistently improve the outcome.
+
+A280: The cost values are more spread out across the range of generation numbers. Both low and high costs are found below generation number 160, while values beyond this point tend to remain relatively high. No consistent relationship is seen between generation number and cost in this dataset.
+
+PR136: This dataset shows a more noticeable trend. Very high costs are seen at low generation numbers (around 25–40). As the generation number increases, the cost values generally decrease, though some variation remains. After a certain point, however, further increases in generation number do not clearly improve the results.
+    
+
+
+
+Overall, the results show that the effect of generation number on cost is not consistent across all datasets. While higher generation numbers help reduce cost in PR136, such a trend is not observed in EIL76 and A280.
 
 
 \subsection{Performance Comparison of Crossover Operators}
