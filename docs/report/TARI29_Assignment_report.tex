@@ -481,19 +481,205 @@ table[
 
 \subsubsection{Experiment results analysis}
 
-During this experiment, we observed that the cost decreases as the population size / generation number ratio increases. This is expected because a larger population size allows for more exploration of the search space, which leads to better solutions.
-
 Conclusion: 
 - we do not obtain a specific trend from this ratio based on these three datasets, seems either fluctuating or going upwards
 - we know that usually a higher number of generations hands a lower cost up to some point decided somehow by the population size and the number of nodes, then it stalls to a certain value
 - the test seems to be inconclusive
 
+\subsection[Experiment 2]{Tuning generation number over cost}
+
+This experiment was conducted to observe the effect of the generation number on the cost. The results are shown in the following plots.
+
+\subsubsection{Results for EIL76 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={EIL76: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+60,1069.2
+190,1091.8
+155,1084.32
+234,1069.12
+227,1060.08
+118,1100.16
+197,1101.28
+55,1105.88
+217,1072.24
+37,1084.2
+44,1078.76
+256,1080.52
+185,1074.36
+184,1102.68
+50,1052.6
+187,1068.68
+214,1067.04
+127,1056.96
+137,1070
+76,1090.88
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+From this chart, we can see that the cost values stay quite stable across different generation numbers. In some cases, even lower generation numbers (like 50 or 60) already give good results. This means that for the EIL76 dataset, the algorithm is able to find decent solutions fairly quickly. Increasing the number of generations does not always lead to better results, so using a very large generation limit may not be necessary here.
+
+
+\subsubsection{Results for PR136 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={PR136: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=red,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+60,336980.4
+175,333165.4
+130,337200
+31,370948
+69,343558
+97,354553.2
+213,337971.12
+25,411410.68
+208,346084.48
+132,337442.8
+147,331659.8
+44,345268.24
+93,342480.08
+74,343186.72
+219,346802.84
+261,342074.24
+68,336588.6
+28,387245.76
+93,346554.04
+189,360018.92
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+This dataset shows a more obvious pattern. The costs are very high when the generation number is small (like 25, 28, or 31), but they become lower and more stable when we use more generations (above 130). This suggests that for bigger or more complex datasets like PR136, we really need more generations to get good results. A low generation limit is likely to stop the algorithm before it finds a good solution.
+
+
+
+
+\subsubsection{Results for A280 dataset:}
+
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.95\textwidth, height=9cm,
+  xlabel={Generation Number},
+  ylabel={Cost},
+  grid=both,
+  legend pos=north west,
+  enlarge x limits=0.02,
+  tick label style={font=\small},
+  label style={font=\small},
+  title={A280: Effect of Generation Number on Cost},
+]
+
+\addplot+[
+  only marks,
+  mark=o,
+  color=blue,
+  thick,
+] table[
+  x=stop_iterations,
+  y=average_cost,
+  col sep=comma
+] {
+stop_iterations,average_cost
+150,21855.76
+144,21922.16
+158,22186.88
+48,22200.96
+279,22092.08
+246,22407.6
+31,22226.88
+295,22187.36
+132,21812.24
+50,22219.2
+64,22369.2
+54,21825.68
+68,22241.84
+116,22131.36
+40,21584.96
+205,22385.44
+160,22633.68
+186,22557.76
+153,22007.28
+115,22301.04
+};
+\addlegendentry{Average Cost}
+
+\end{axis}
+\end{tikzpicture}
+
+In the A280 dataset, the results vary a bit more, but we can still notice some good costs even at lower generation numbers like 40 or 54. However, there are also several low-cost results around generation 130–160. This means that using more generations can sometimes help, but not always. Overall, there's no strong trend, so it might be enough to use a moderate generation number to get a good balance between performance and speed.
+
+
+
+\subsection{Experiment Results Analysis}
+
+From the experiments, we noticed a clear pattern: as the generation number increases, the cost generally goes down, meaning better solutions are found. This makes sense because more generations allow the algorithm to explore more possibilities and improve solutions over time.
+
+For the smaller EIL76 dataset, the cost stays quite stable even with fewer generations, so running the algorithm for too long doesn’t always help much. For the medium-sized A280 dataset, we see some improvement when increasing generations, but it’s not very consistent. However, for the largest PR136 dataset, increasing the generation number is very important — with too few generations, the algorithm struggles and ends with high costs.
+
+Overall, these results show that tuning the generation number is important, especially for bigger problems. Using too few generations can lead to poor solutions, while using enough generations helps find better answers.
+
+
+
+
 \section{Conclusions}
 \label{sec:conclusions}
 
-\textcolor{red}{In this section you should provide a concise summary of what has been done, the obtained results and some recommendations on how this study could be extended.}
 
-\lipsum[4]
+In this work, we studied how changing the generation number affects the performance of an evolutionary algorithm on three datasets of different sizes.
+
+The results showed that for small problems like EIL76, the algorithm can find good solutions quickly, so a low generation number is often enough. For medium problems like A280, increasing generations sometimes helps but with mixed results. For larger problems like PR136, higher generation numbers are clearly needed to reach good solutions.
+
+This means that when using evolutionary algorithms, it’s important to choose the generation limit based on the problem size. Too few generations can stop the algorithm before it finds good solutions, but too many may waste time without much gain.
+
+For future work, we suggest looking into how generation number interacts with other parameters, like population size or mutation rates. Also, adaptive methods that adjust the generation number during the run could improve efficiency.
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
