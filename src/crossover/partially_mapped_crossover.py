@@ -6,7 +6,8 @@ class PartiallyMappedCrossover(Crossover):
     
     def crossover(self, parents: tuple[list[int], list[int]]) -> tuple[list[int], list[int]]: 
         idx_a, idx_b = self.get_cross_points(len(parents[0]))
-        parent_a, parent_b = parents
+        parent_a = parents[0].copy()
+        parent_b = parents[1].copy()
         crossover_pts1 = parent_b[idx_a:idx_b]
         crossover_pts2 = parent_a[idx_a:idx_b]
         crossover_position_vector = []
