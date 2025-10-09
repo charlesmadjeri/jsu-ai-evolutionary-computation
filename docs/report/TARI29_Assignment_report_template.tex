@@ -332,6 +332,14 @@ Statistical significance of performance differences between algorithms was asses
 
 This experiment was conducted to observe the effect of the population size / generation number ratio tuning on the cost. The results are shown in the following plots.
 
+Experiment: cost impact on generations number/population ratio in the case of three datasets
+
+Goal: seeing if the cost evolution creates some kind of pattern by changing the ratio between the number of generations and the population size
+
+Tested datasets: eil76, pr136, a280
+
+Method of testing: fine-tuning every dataset using the predefined range established within the config.py file, generating 20 parameter sets for each
+
 \subsubsection{Results for EIL76 dataset:}
 
 \begin{tikzpicture}
@@ -381,7 +389,8 @@ table[
 \end{axis}
 \end{tikzpicture}
 
-Here we can observe blablabla
+- there is no noticeable evolution trend for average cost, values seem to fluctuate between 1000 and 1200
+- there are several variations between average cost and best cost, values variating from a difference of 100 to even 400 at some point
 
 \subsubsection{Results for PR136 dataset:}
 
@@ -432,7 +441,9 @@ table[
 \end{axis}
 \end{tikzpicture}
 
-Here we can observe blablabla
+- slight trend of the cost going upwards, leaving aside some exceptional cases
+- the difference between average and best cost is pretty uniform for the majority of cases, variating between 0.5*10(pow)5 and 1*10(pow)5 
+- to give context, the majority of average costs for each point vary around 3.5*10(pow)5 and 4.5*10(pow)5
 
 \subsubsection{Results for A280 dataset:}
 
@@ -483,11 +494,17 @@ table[
 \end{axis}
 \end{tikzpicture}
 
-Here we can observe blablabla
+- there seems to be a general trend of the cost going upwards
+- differences between average cost and best cost seem to be approximately the same for almost every point, few exceptions aside
 
 \subsubsection{Experiment results analysis}
 
 During this experiment, we observed that the cost decreases as the population size / generation number ratio increases. This is expected because a larger population size allows for more exploration of the search space, which leads to better solutions.
+
+Conclusion: 
+- we do not obtain a specific trend from this ratio based on these three datasets, seems either fluctuating or going upwards
+- we know that usually a higher number of generations hands a lower cost up to some point decided somehow by the population size and the number of nodes, then it stalls to a certain value
+- the test seems to be inconclusive
 
 
 \section{Conclusions}
